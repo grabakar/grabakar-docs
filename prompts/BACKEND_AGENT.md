@@ -85,4 +85,4 @@ Servicios:
 
 - Contratos API: `grabakar-docs/tecnico/API_CONTRACTS.md`
 - Modelo de datos: `grabakar-docs/tecnico/MODELO_DATOS.md`
-- Specs de features: `grabakar-docs/fases/`, `grabakar-docs/backlog/`
+- Specs de features: `grabakar-docs/features/`, `grabakar-docs/planificacion/BACKLOG.md`

@@ -23,7 +23,7 @@ Seguir este orden estricto:
 
 ## Antes de Empezar
 
-- Leer la spec de la feature en `grabakar-docs/backlog/` o `grabakar-docs/fases/`.
+- Leer la spec de la feature en `grabakar-docs/features/` o `grabakar-docs/planificacion/BACKLOG.md`.
 - Leer el contrato API en `grabakar-docs/tecnico/API_CONTRACTS.md`.
 - Verificar la tarea asignada en el backlog y sus criterios de aceptación.
 
@@ -62,7 +62,7 @@ Seguir este orden estricto:
 ## Ubicación de Documentación
 
 Toda la documentación del proyecto vive en `grabakar-docs/`:
-- Specs de features: `fases/`, `backlog/`
+- Specs de features: `features/`, `planificacion/BACKLOG.md`
 - Contratos API: `tecnico/API_CONTRACTS.md`
 - Arquitectura: `tecnico/ARQUITECTURA.md`
 - Modelos de datos: `tecnico/MODELO_DATOS.md`
