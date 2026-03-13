@@ -1,0 +1,24 @@
+pantalla inicio: user y pass
+la pantalla de inicio tiene un signo "+" para agregar patente:
+
+- patente
+- reingreso patente
+- bin
+- chassis
+- orden de trabajo (OC)
+- responsable (incentivos para quienes ganan el grabado)
+- tipo de movimiento: venta o demo (muestra o capacitacion)
+- guardar (esto imprime). Una vez presionado, cambia el boton a decir "imprimir"
+Luego, queda guardada la patente. Debiera quedar 30 dias guardada la patente en el dispositivo.
+el hamburger menu arriba a la izquierda, es para:
+
+- imprimir en horizontal o vertical,
+- si es para auto o moto (tamaño y formato)
+
+
+Al operador le llega todos los dias un reporte con todas las patentes realizadas, también llega uno a fin de mes.
+Bug: si uno presiona el "+" sin guardar, vuelve atras y luego entra nuevamente con el "+", uno puede modificar la patente y mandar a imprimir de nuevo, es un exploit que habria que fijarse.
+si ingreso una patente que ya esta en el device, debiera tirar una alerta.
+otro problema:
+
+- el device no esta obligado a estar online para funcionar. sólo cuando se conecta sube la data, por wifi. Se controla mediante cerrar sesion cada 3 hrs, con los inicios de sesion se suben los datos. Igual tiene un lag enorme
