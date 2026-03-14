@@ -23,6 +23,8 @@ winget install Git.Git
 ```
 After install, **close and reopen the terminal** so `git` is in PATH.
 
+> **Important:** The repos are private. The user must be authenticated with GitHub. After installing Git, run `git auth login` or configure a Personal Access Token. If using Cursor, the user should also **grant GitHub permissions** when prompted by the editor (Settings → Accounts → Sign in with GitHub). Without this, cloning will fail with a 403/404 error.
+
 ### 2. Node.js (LTS)
 ```powershell
 winget install OpenJS.NodeJS.LTS
