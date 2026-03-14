@@ -115,12 +115,19 @@ If backend shows errors, check logs:
 docker compose logs backend --tail 50
 ```
 
-### Create a test user
+### Seed test data and users
 
 ```powershell
-docker compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py seed_dev_data
 ```
-Follow the prompts (username, email, password). This creates an admin user for testing.
+
+This loads the demo tenant, law cases, branches, and creates 3 test users:
+
+| Username | Password | Role |
+|----------|----------|------|
+| `admin` | `grabakar123` | admin |
+| `supervisor` | `grabakar123` | supervisor |
+| `operador` | `grabakar123` | operador |
 
 ### Verify
 
@@ -207,7 +214,7 @@ For frontend-specific rules: `repos\grabakar-docs\prompts\FRONTEND_AGENT.md`
 | Run backend linter | `docker compose exec backend ruff check .` |
 | Run frontend linter | `cd repos\grabakar-frontend && npm run lint` |
 | Django migrations | `docker compose exec backend python manage.py migrate` |
-| Create superuser | `docker compose exec backend python manage.py createsuperuser` |
+| Seed test data | `docker compose exec backend python manage.py seed_dev_data` |
 | Django shell | `docker compose exec backend python manage.py shell` |
 | Rebuild containers | `docker compose up -d --build` |
 | Update all repos | `scripts\update.bat` |
