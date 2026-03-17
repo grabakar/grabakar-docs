@@ -323,13 +323,8 @@ graph TD
 ## User Review Required
 
 > [!IMPORTANT]
-> **GCP billing account**: You need a GCP account with billing enabled. The staging environment will cost ~$50-80/month. Do you already have a GCP project or should we create a new one?
-
-> [!IMPORTANT]
-> **Domain names**: The plan assumes `grabakar.cl` (or similar). Do you own a domain? If not, the services will be accessible via Cloud Run auto-generated URLs (`*.run.app`).
-
-> [!WARNING]
-> **Memorystore + VPC Connector** is the most expensive part (~$22/month combined) and is required for Redis. An alternative for staging is to use a small Compute Engine VM running Redis (~$5/month) or to use Cloud Run with a Redis Cloud free tier (30MB, external). This would reduce costs significantly.
+> **GCP billing account**: You need a GCP account with billing enabled, even for free-tier resources. We are targeting the **$0/month** staging environment using the `e2-micro` VM.
+> **Domain names**: The plan will use your domain `panchopin.com` (e.g., `app.panchopin.com` and `admin.panchopin.com`). This requires configuring DNS records in your domain registrar to point to GCP buckets and Cloud Run.
 
 ## Verification Plan
 
