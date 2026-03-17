@@ -32,90 +32,65 @@
 
 ---
 
-## GCP Architecture
+## GCP Architecture ($0/month Minimal Setup)
 
 ```
                     ┌─────────────────────────────────────┐
-                    │           Cloud CDN                  │
-                    │     app.grabakar.cl (frontend)       │
-                    │     Cloud Storage (static bucket)    │
+                    │           Cloud CDN (Optional)      │
+                    │   app.grabakar.cl (frontend web)    │
+                    │   admin.grabakar.cl (admin panel)   │
+                    │     Cloud Storage (static buckets)  │
                     └──────────────┬──────────────────────┘
                                    │
     ┌──────────────────────────────┼───────────────────────┐
     │                              │                       │
     ▼                              ▼                       ▼
-┌──────────┐              ┌──────────────┐        ┌──────────────┐
-│Cloud Run │              │ Cloud Run    │        │Cloud Scheduler│
-│ Backend  │              │ Celery Worker│        │  (beat jobs)  │
-│ (API)    │              │ (always-on)  │        │               │
-└────┬─────┘              └──────┬───────┘        └───────┬───────┘
-     │                           │                        │
-     └──────────┬────────────────┘                        │
-                │                                         │
-    ┌───────────┴──────────┐       ┌──────────────────────┘
-    │                      │       │
-    ▼                      ▼       ▼
-┌──────────┐        ┌──────────┐
-│Cloud SQL │        │Memorystore│
-│PostgreSQL│        │  Redis    │
-│  16      │        │           │
-└──────────┘        └──────────┘
-    ↕                   ↕
- Secret Manager (all credentials)
+┌──────────┐              ┌──────────────┐
+│Cloud Run │              │ Compute      │
+│ Backend  │              │ Engine       │
+│ (API)    │              │ (e2-micro)   │
+└────┬─────┘              └──────┬───────┘
+     │                           │
+     └──────────┬────────────────┘
+                │
+    ┌───────────┴──────────┐
+    │  PostgreSQL 16       │
+    │  Redis (Mem broker)  │
+    │  Celery Worker/Beat  │
+    └──────────────────────┘
 ```
 
 ---
 
 ## GCP Services & Cost Estimate
 
-### Staging Environment (~$50-80/month)
+### Staging Environment ($0/month Hacker Route)
 
+Using GCP's "Always Free" tier limits:
 | Service | Config | Est. Cost/mo |
 |---|---|---|
-| **Cloud Run (backend API)** | 1 instance, 0.5 vCPU, 512MB, min 0 instances | ~$5-10 (scale to zero) |
-| **Cloud Run (Celery worker)** | 1 instance always-on, 0.5 vCPU, 512MB | ~$15-20 |
-| **Cloud SQL (PostgreSQL 16)** | `db-f1-micro`, 10GB SSD, no HA | ~$8-12 |
-| **Memorystore (Redis)** | Basic tier, 1GB M1 | ~$15-20 |
-| **Cloud Storage** | Frontend bucket + media, <1GB | ~$0.50 |
-| **Secret Manager** | ~10 secrets | ~$0.06 |
-| **Artifact Registry** | Container images, <5GB | ~$0.50 |
-| **Cloud CDN** | Minimal traffic | ~$1-3 |
-| **Cloud Scheduler** | 2-3 cron jobs (Celery beat replacement) | ~$0.30 |
+| **Cloud Run (backend API)** | Scales to zero, <2M reqs/mo | $0 |
+| **Compute Engine (VM)** | 1 `e2-micro` instance in US region | $0 |
+| **Cloud Storage** | web, admin, and media buckets (<5GB) | $0 |
+| **Artifact Registry** | Container images (<1GB) | $0 |
+| **Secret Manager** | ~10 secrets | $0 |
 
-> [!TIP]
-> **Free Tier:** Cloud Run offers 2M requests/month free, and Cloud SQL has no free tier but `db-f1-micro` is the cheapest option. Memorystore has no free tier — this is the biggest fixed cost. An alternative is to use Cloud Run + a Redis sidecar or an in-memory broker (but Celery needs Redis).
+_Note: The `e2-micro` VM will host PostgreSQL, Redis, and the Celery worker process manually. This eliminates the ~$80/mo cost of managed Cloud SQL + Memorystore + Cloud Run continuous allocation._
 
 ### Production Environment (~$100-200/month)
-
-Same as staging but:
-- Cloud SQL: `db-g1-small` with HA → ~$50
-- Memorystore: Basic 1GB → ~$20
-- Cloud Run: min 1 instance (no cold starts) → ~$25-35
-- Daily backups: ~$3
+For production, we will transition to managed services:
+- Cloud SQL (`db-g1-small` with HA)
+- Memorystore (Basic 1GB)
+- Cloud Run (min instances = 1 for backend + separate worker)
 
 ---
 
-## Celery on Cloud Run — Design Decision
+## Architecture Design Decisions
 
 > [!IMPORTANT]
-> Cloud Run is designed for request-driven workloads. Celery workers are long-running processes. This requires a specific approach.
-
-### Options Evaluated
-
-| Option | Pros | Cons | Recommendation |
-|---|---|---|---|
-| **A. Cloud Run always-on** (min instances = 1) | Simple, same image | Costs even when idle, single process per container | ✅ **Best for MVP** |
-| **B. Compute Engine (small VM)** | Full control, cheap for always-on | Manual management, not serverless | Good for production |
-| **C. Cloud Run Jobs** | Pay only when running | Only for batch, not for persistent worker | Not suitable for Celery |
-| **D. Replace Celery with Cloud Tasks** | Fully serverless, no Redis needed | Code rewrite, GCP lock-in | Future optimization |
-
-### Recommended Approach
-
-- **API backend**: Cloud Run (scales to zero, handles HTTP requests)
-- **Celery worker**: Cloud Run with `min-instances=1` (always-on, consumes from Redis)
-- **Celery beat replacement**: Cloud Scheduler → HTTP trigger to Cloud Run endpoint that dispatches Celery tasks
-  - Instead of `celery beat`, create a Cloud Scheduler cron that calls `POST /api/internal/trigger-report/` which dispatches the Celery task
-  - This eliminates the need for a separate beat container
+> **Database & Celery:** To achieve $0/mo, we cannot use Cloud SQL or Memorystore. Instead, we'll provision a single free-tier `e2-micro` Debian VM. On this VM we will run Docker containers for Postgres, Redis, and Celery.
+> **Backend API:** Will remain on serverless Cloud Run. It will connect to the Postgres/Redis instance running on the e2-micro VM via its internal VPC IP.
+> **Frontends:** We now have TWO frontends to deploy to Cloud Storage: `grabakar-frontend` (the operator web app) and `grabakar-admin` (the superadmin panel).
 
 ---
 
@@ -205,74 +180,55 @@ LOGGING = {
 
 ---
 
-### Phase 3 — Cloud Infrastructure (CLI commands)
+### Phase 3 — Cloud Infrastructure ($0/mo VM setup)
 
 #### 3A. Artifact Registry (container images)
 
 ```bash
 gcloud artifacts repositories create grabakar \
   --repository-format=docker \
-  --location=southamerica-east1 \
+  --location=us-central1 \
   --description="GrabaKar container images"
 ```
 
-#### 3B. Cloud SQL (PostgreSQL 16)
+#### 3B. Compute Engine e2-micro (Postgres + Redis + Celery)
 
 ```bash
-gcloud sql instances create grabakar-pg-staging \
-  --database-version=POSTGRES_16 \
-  --tier=db-f1-micro \
-  --region=southamerica-east1 \
-  --storage-size=10GB \
-  --storage-auto-increase
+# Create the VM in a free-tier eligible region (e.g., us-central1)
+gcloud compute instances create grabakar-state-vm \
+  --project=grabakar-staging \
+  --zone=us-central1-a \
+  --machine-type=e2-micro \
+  --network-interface=network-tier=PREMIUM,subnet=default \
+  --tags=http-server,https-server \
+  --boot-disk-size=30GB \
+  --boot-disk-type=pd-standard
 
-gcloud sql databases create grabakar --instance=grabakar-pg-staging
-
-gcloud sql users create grabakar \
-  --instance=grabakar-pg-staging \
-  --password="$(openssl rand -base64 24)"
-```
-
-#### 3C. Memorystore (Redis)
-
-```bash
-gcloud redis instances create grabakar-redis-staging \
-  --size=1 \
-  --region=southamerica-east1 \
-  --redis-version=redis_7_0 \
-  --tier=basic
-```
-
-> [!WARNING]
-> Memorystore requires **VPC Connector** for Cloud Run to connect. This adds ~$7/month but is required.
-
-```bash
-gcloud compute networks vpc-access connectors create grabakar-connector \
-  --network=default \
-  --region=southamerica-east1 \
-  --range=10.8.0.0/28 \
-  --min-instances=2 \
-  --max-instances=3
+# Once created, we will SSH in and install Docker, then run Postgres/Redis/Celery
 ```
 
 #### 3D. Secret Manager
 
 ```bash
 echo -n "$(openssl rand -base64 50)" | gcloud secrets create django-secret-key --data-file=-
-echo -n "<db-password>" | gcloud secrets create db-password --data-file=-
 ```
 
-#### 3E. Cloud Storage (frontend + media)
+#### 3E. Cloud Storage (frontends + media)
 
 ```bash
-# Frontend static hosting
+# Operator Web App
 gcloud storage buckets create gs://grabakar-frontend-staging \
-  --location=southamerica-east1 \
+  --location=us-central1 \
+  --uniform-bucket-level-access
+
+# Admin Panel
+gcloud storage buckets create gs://grabakar-admin-staging \
+  --location=us-central1 \
   --uniform-bucket-level-access
 
 # Media uploads
 gcloud storage buckets create gs://grabakar-media-staging \
-  --location=southamerica-east1
+  --location=us-central1
 ```
 
 ---
@@ -282,83 +238,48 @@ gcloud storage buckets create gs://grabakar-media-staging \
 ```bash
 # Build and push image
 gcloud builds submit \
-  --tag southamerica-east1-docker.pkg.dev/grabakar-staging/grabakar/backend:latest \
+  --tag us-central1-docker.pkg.dev/grabakar-staging/grabakar/backend:latest \
   ./repos/grabakar-backend
 
 # Deploy API
 gcloud run deploy grabakar-backend \
-  --image southamerica-east1-docker.pkg.dev/grabakar-staging/grabakar/backend:latest \
+  --image us-central1-docker.pkg.dev/grabakar-staging/grabakar/backend:latest \
   --platform managed \
-  --region southamerica-east1 \
+  --region us-central1 \
   --allow-unauthenticated \
-  --add-cloudsql-instances grabakar-staging:southamerica-east1:grabakar-pg-staging \
-  --vpc-connector grabakar-connector \
   --set-env-vars "DJANGO_SETTINGS_MODULE=config.settings.production" \
-  --set-env-vars "CLOUD_SQL_CONNECTION_NAME=grabakar-staging:southamerica-east1:grabakar-pg-staging" \
-  --set-env-vars "DB_NAME=grabakar,DB_USER=grabakar,DB_PORT=5432" \
-  --set-env-vars "CELERY_BROKER_URL=redis://<REDIS_IP>:6379/0" \
-  --set-env-vars "CORS_ALLOWED_ORIGINS=https://staging.grabakar.cl" \
+  --set-env-vars "DB_HOST=<VM_INTERNAL_IP>,DB_NAME=grabakar,DB_USER=grabakar,DB_PORT=5432" \
+  --set-env-vars "CELERY_BROKER_URL=redis://<VM_INTERNAL_IP>:6379/0" \
+  --set-env-vars "CORS_ALLOWED_ORIGINS=https://staging.grabakar.cl,https://admin.grabakar.cl" \
   --set-secrets "DJANGO_SECRET_KEY=django-secret-key:latest" \
-  --set-secrets "DB_PASSWORD=db-password:latest" \
   --min-instances 0 \
-  --max-instances 5 \
-  --memory 512Mi \
-  --cpu 1
-
-# Deploy Celery worker (same image, different command)
-gcloud run deploy grabakar-celery \
-  --image southamerica-east1-docker.pkg.dev/grabakar-staging/grabakar/backend:latest \
-  --platform managed \
-  --region southamerica-east1 \
-  --no-allow-unauthenticated \
-  --command "celery,-A,config,worker,-l,info,--concurrency,2" \
-  --add-cloudsql-instances grabakar-staging:southamerica-east1:grabakar-pg-staging \
-  --vpc-connector grabakar-connector \
-  --set-env-vars "DJANGO_SETTINGS_MODULE=config.settings.production" \
-  --set-env-vars "CLOUD_SQL_CONNECTION_NAME=grabakar-staging:southamerica-east1:grabakar-pg-staging" \
-  --set-secrets "DJANGO_SECRET_KEY=django-secret-key:latest,DB_PASSWORD=db-password:latest" \
-  --min-instances 1 \
   --max-instances 2 \
   --memory 512Mi \
   --cpu 1
 ```
 
-#### Run Migrations (one-time)
-
-```bash
-gcloud run jobs create grabakar-migrate \
-  --image southamerica-east1-docker.pkg.dev/grabakar-staging/grabakar/backend:latest \
-  --command "python,manage.py,migrate" \
-  --add-cloudsql-instances grabakar-staging:southamerica-east1:grabakar-pg-staging \
-  --vpc-connector grabakar-connector \
-  --set-env-vars "DJANGO_SETTINGS_MODULE=config.settings.production" \
-  --set-secrets "DJANGO_SECRET_KEY=django-secret-key:latest,DB_PASSWORD=db-password:latest" \
-  --region southamerica-east1
-
-gcloud run jobs execute grabakar-migrate --region southamerica-east1
-```
+*(Note: Migrations will be run from the VM or locally pointing to the VM's postgres instance)*
 
 ---
 
-### Phase 5 — Deploy Frontend to Cloud Storage + CDN
+### Phase 5 — Deploy Frontends to Cloud Storage
 
+#### 5A. Operator Web App (grabakar-frontend)
 ```bash
-# Build frontend
 cd repos/grabakar-frontend
 npm run build
-
-# Upload to bucket
 gcloud storage cp -r dist/* gs://grabakar-frontend-staging/
+gcloud storage buckets add-iam-policy-binding gs://grabakar-frontend-staging --member=allUsers --role=roles/storage.objectViewer
+gcloud storage buckets update gs://grabakar-frontend-staging --web-main-page-suffix=index.html --web-not-found-page=index.html
+```
 
-# Make public
-gcloud storage buckets add-iam-policy-binding gs://grabakar-frontend-staging \
-  --member=allUsers \
-  --role=roles/storage.objectViewer
-
-# Configure as website
-gcloud storage buckets update gs://grabakar-frontend-staging \
-  --web-main-page-suffix=index.html \
-  --web-not-found-page=index.html
+#### 5B. Admin Panel (grabakar-admin)
+```bash
+cd repos/grabakar-admin
+npm run build
+gcloud storage cp -r dist/* gs://grabakar-admin-staging/
+gcloud storage buckets add-iam-policy-binding gs://grabakar-admin-staging --member=allUsers --role=roles/storage.objectViewer
+gcloud storage buckets update gs://grabakar-admin-staging --web-main-page-suffix=index.html --web-not-found-page=index.html
 ```
 
 ---
