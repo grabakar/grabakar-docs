@@ -174,4 +174,4 @@ class TenantQuerySetMixin:
 | Estado global | Context API | Redux, Zustand | La app tiene poco estado compartido (auth, config, connectivity). Context es suficiente. No se justifica una librería externa. |
 | Async tasks | Celery + Redis | Django Q, Huey | Celery es el estándar en Django. Redis cumple doble rol (broker + cache). Mayor ecosistema y documentación. |
 | Comunicación | REST JSON | GraphQL, WebSockets | REST es simple y predecible para offline-first. GraphQL agrega complejidad innecesaria para esta cantidad de endpoints. WebSockets no funcionan sin red. |
-| Deploy target | GCP (agnostic) | AWS, Azure | Target primario GCP, pero toda la infra se abstrae via Docker, env vars, y django-storages. Migrar a otro cloud requiere solo cambiar config de deploy. |
+| Deploy target | GCP | AWS, Azure | Stack nativo: Cloud Run (Django API), Cloud SQL (PostgreSQL), Memorystore (Redis), Cloud Scheduler (CRON), Cloud Storage (Media). GitHub Actions automatiza el despliegue a GCP. |

@@ -5,7 +5,7 @@ Asignación para un agente que trabaje **solo** en sincronización. No tocar aut
 ## Contexto
 
 - **Repo**: `grabakar-backend/`
-- **Reglas**: `AGENT_RULES.md`, `BACKEND_AGENT.md`, `BACKEND_IMPLEMENTATION.md`
+- **Reglas**: `AGENT_RULES.md`, `BACKEND_AGENT.md`
 - **Contrato**: `grabakar-docs/tecnico/API_CONTRACTS.md` § 3. Sincronización
 - **Código**: `api/views/sync.py`, `api/services/sync_service.py`
 

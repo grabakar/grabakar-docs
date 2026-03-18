@@ -2,7 +2,6 @@
 
 Estas reglas aplican a TODOS los agentes que trabajen en cualquier repo de GrabaKar.
 
-> **Implementation Plan:** Read [AGENT_RULES_IMPLEMENTATION.md](implementation_plans/AGENT_RULES_IMPLEMENTATION.md) for exact PDCA procedures, git workflow commands, verification scripts, parallel work protocol, and error handling standards.
 
 ## Estilo de Código
 

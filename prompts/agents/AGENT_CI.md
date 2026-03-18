@@ -6,7 +6,7 @@ Asignación para añadir el pipeline de CI del backend. No modificar lógica de 
 
 - **Repo**: `grabakar-backend/` (raíz del backend)
 - **Referencia**: `grabakar-docs/tecnico/TESTING.md` § CI — GitHub Actions (backend.yml)
-- **Plan**: `BACKEND_IMPLEMENTATION.md` § CI/CD (P0-04)
+
 
 ## Estado actual
 

@@ -5,7 +5,7 @@ Asignación para un agente que trabaje **solo** en el dominio Grabados. No tocar
 ## Contexto
 
 - **Repo**: `grabakar-backend/`
-- **Reglas**: `AGENT_RULES.md`, `BACKEND_AGENT.md`, `BACKEND_IMPLEMENTATION.md`
+- **Reglas**: `AGENT_RULES.md`, `BACKEND_AGENT.md`
 - **Contrato**: `grabakar-docs/tecnico/API_CONTRACTS.md` § 2. Grabados
 - **Modelo**: `api/models.py` — `Grabado`, `ImpresionVidrio`
 

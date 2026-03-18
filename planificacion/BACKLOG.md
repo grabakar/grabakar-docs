@@ -36,7 +36,7 @@
   - `.cursorrules` creado en la raíz del repo
   - Service worker básico registrado (PWA shell)
   - Theme provider configurado con CSS variables para white-labeling
-- **Estado:** pendiente
+- **Estado:** completo
 
 ### P0-03: Crear repositorio de documentación
 
@@ -47,7 +47,7 @@
 - **Criterio de aceptación:**
   - Todas las carpetas y archivos del workspace `grabakar-docs/` presentes
   - `README.md` con links a cada sección
-- **Estado:** pendiente
+- **Estado:** completo
 
 ### P0-04: Configurar CI/CD base para backend
 - **Repo:** `grabakar-backend`
@@ -149,7 +149,7 @@
   - Purga automática ejecuta correctamente (test con datos mock)
   - Registros no sincronizados nunca se purgan
   - Tests unitarios para cada operación
-- **Estado:** pendiente
+- **Estado:** completo
 
 #### P1-07: Servicio de autenticación frontend
 - **Repo:** `grabakar-frontend`
@@ -163,7 +163,7 @@
   - Sin conexión + token offline expirado = redirige a login con mensaje
   - `ProtectedRoute` redirige a `/login` si no autenticado
   - Tests: flujo completo con mocks
-- **Estado:** pendiente
+- **Estado:** completo
 
 #### P1-08: SyncManager
 - **Repo:** `grabakar-frontend`
@@ -176,7 +176,7 @@
   - Reintenta con backoff en caso de error
   - Estado reactivo disponible via hook (`useSyncStatus`)
   - Tests: mock de red, verificar reintentos
-- **Estado:** pendiente
+- **Estado:** completo
 
 ### Bloque Frontend - Páginas
 
@@ -191,7 +191,7 @@
   - Sin conexión muestra estado y usa token offline si disponible
   - UI responsive (tablet landscape como target primario)
   - Tests de componente: render, submit, errores
-- **Estado:** pendiente
+- **Estado:** completo
 
 #### P1-10: Página Home (Lista de Grabados)
 - **Repo:** `grabakar-frontend`
@@ -204,7 +204,7 @@
   - Menú hamburguesa funcional
   - Indicadores visuales de sync correctos
   - Tests de componente
-- **Estado:** pendiente
+- **Estado:** completo
 
 #### P1-11: Formulario de Creación de Grabado
 - **Repo:** `grabakar-frontend`
@@ -218,7 +218,7 @@
   - Registro persiste en IndexedDB
   - Registro se encola para sync
   - Tests: validaciones, duplicado, guardado
-- **Estado:** pendiente
+- **Estado:** completo
 
 #### P1-12: Flujo Multi-Vidrio
 - **Repo:** `grabakar-frontend`
@@ -231,7 +231,7 @@
   - Contador de impresiones incrementa por vidrio
   - "Finalizar" retorna a Home
   - Tests de componente: flujo completo
-- **Estado:** pendiente
+- **Estado:** completo
 
 #### P1-13: Theming y White-Label
 - **Repo:** `grabakar-frontend`
@@ -243,7 +243,7 @@
   - Sin config: defaults de GrabaKar
   - Cero referencias hardcodeadas a "GrabaKar" en componentes
   - Test: verificar que CSS variables se aplican
-- **Estado:** pendiente
+- **Estado:** completo
 
 ---
 
@@ -255,36 +255,36 @@
 - **Repo:** `grabakar-backend`
 - **Descripción:** Crear modelo `Sucursal` (tenant FK, nombre, activa). Agregar `Tenant.tipo_cliente`, `Usuario.sucursal` FK, `Grabado.sucursal` FK, `Grabado.responsable_texto`. Generar y aplicar migración. Actualizar admin, serializers, SyncService.
 - **Dependencias:** P1-01
-- **Archivos relevantes:** `tecnico/MODELO_DATOS.md`, `prompts/implementation_plans/REPORT_XLSX_IMPLEMENTATION.md` § 2, § 4A
+- **Archivos relevantes:** `tecnico/MODELO_DATOS.md`
 - **Criterio de aceptación:**
   - Migración aplica sin errores
   - Sucursal visible en admin con filtros por tenant
   - Sync upload acepta `responsable_texto` y `sucursal_id`
   - Tests: modelo, admin, sync con nuevos campos
-- **Estado:** pendiente
+- **Estado:** completo
 
 #### P2-02: ReporteXLSXService + endpoint plataforma
 - **Repo:** `grabakar-backend`
 - **Descripción:** Crear `api/services/reporte_xlsx_service.py` con `ReporteXLSXService.generar_xlsx(report_date, tenant_id=None)`. Genera XLSX con 3 tabs (Resumen, Resumen por dia, Patentes). Agregar `openpyxl` a requirements. Crear vista `ReportePlataformaView` en `api/views/reportes.py` y registrar en `api/urls.py`. Admin-only.
 - **Dependencias:** P2-01
-- **Archivos relevantes:** `prompts/implementation_plans/REPORT_XLSX_IMPLEMENTATION.md` § 3, § 4B, § 4C
+- **Archivos relevantes:** Ninguno (ya implementado)
 - **Criterio de aceptación:**
   - `GET /api/v1/reportes/plataforma/?fecha=2026-03-03` devuelve XLSX descargable
   - XLSX tiene 3 tabs con datos correctos
   - Tab 2 agrupa por `fecha_sincronizacion` (verificado)
   - Solo admin puede acceder (403 para operador/supervisor)
   - Tests: servicio unitarios + endpoint integración
-- **Estado:** pendiente
+- **Estado:** completo
 
 #### P2-03: Celery task XLSX diaria
 - **Repo:** `grabakar-backend`
 - **Descripción:** Task `generar_reporte_xlsx_diario()` que genera XLSX month-to-date diariamente. Configurar en celery-beat (01:00 AM America/Santiago).
 - **Dependencias:** P2-02
-- **Archivos relevantes:** `prompts/implementation_plans/REPORT_XLSX_IMPLEMENTATION.md` § 4D
+- **Archivos relevantes:** Ninguno (ya implementado)
 - **Criterio de aceptación:**
   - Task ejecuta y genera XLSX correcto
   - Configurada en celery-beat scheduler
-- **Estado:** pendiente
+- **Estado:** completo
 
 #### P2-04: Seed data sucursales
 - **Repo:** `grabakar-backend`
@@ -292,7 +292,7 @@
 - **Dependencias:** P2-01
 - **Criterio de aceptación:**
   - `loaddata initial` carga sucursales de ejemplo
-- **Estado:** pendiente
+- **Estado:** completo
 
 ---
 
@@ -323,3 +323,17 @@ P0-03 (Docs repo) ── sin dependientes técnicos
 **Ronda 4** (post P1-02, P1-07): P1-03, P1-04, P1-05, P1-08, P1-09 → 5 tareas, 3-4 agentes
 **Ronda 5** (post P1-09): P1-10, P1-11 → 2 agentes
 **Ronda 6** (post P1-11): P1-12 → 1 agente
+
+---
+
+## Fase 5: DevOps & CI/CD
+
+### P5-01: Pipeline CI/CD Automático
+- **Repo:** `grabakar-infra` (orquestrador)
+- **Descripción:** Implementar estrategia DevOps robusta con GitHub Actions. Configurar pipelines para compilar y desplegar automáticamente el backend y ambos frontends a GCP cuando hay cambios en las ramas principales.
+- **Entregable:** Workflows en GitHub que detecten cambios en los submodulos o repositorios individuales y desplieguen automáticamente a staging/production sin intervención manual rutinaria.
+- **Dependencias:** Repositorios separados completos (Fase 0)
+- **Archivos relevantes:** `.github/workflows/deploy.yml`
+- **Criterio de aceptación:**
+  - Un commit en `grabakar-backend` dispara actualización en Cloud Run
+  - Un commit en los frontends regenera el build `.js/.css` y actualiza los buckets en Google Cloud Storage automáticamente.

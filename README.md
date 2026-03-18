@@ -20,6 +20,7 @@ App B2B offline-first para registrar el grabado de patentes vehiculares en vidri
 - [BLUETOOTH_IMPRESION.md](features/BLUETOOTH_IMPRESION.md) — Impresión Bluetooth (stub — Fase 3)
 - [CAMARA_OCR.md](features/CAMARA_OCR.md) — Escaneo OCR de patente/VIN (stub — Fase 4)
 - [REPORTES.md](features/REPORTES.md) — Reportes XLSX plataforma + JSON/CSV per-tenant (Fase 2)
+- [ADMIN_PANEL.md](features/ADMIN_PANEL.md) — Panel de administración web (cross-tenant, analíticas, CRUD)
 
 ### tecnico/
 
@@ -30,6 +31,11 @@ App B2B offline-first para registrar el grabado de patentes vehiculares en vidri
 - [TESTING.md](tecnico/TESTING.md) — Testing y cobertura
 - [DEPLOYMENT.md](tecnico/DEPLOYMENT.md) — Deployment y Docker
 - [SEGURIDAD.md](tecnico/SEGURIDAD.md) — Seguridad y autenticación
+- [ADMIN_PANEL_API.md](tecnico/ADMIN_PANEL_API.md) — Contratos de API del panel admin
+- [ADMIN_PANEL_USAGE.md](tecnico/ADMIN_PANEL_USAGE.md) — Guía de uso/runbook del panel admin
+- [DEVOPS_CICD_STRATEGY.md](tecnico/DEVOPS_CICD_STRATEGY.md) — Estrategia DevOps y CI/CD en GCP ($0/mo)
+- [GCP_ARCHITECTURE.md](tecnico/GCP_ARCHITECTURE.md) — Infraestructura GCP desplegada (staging)
+- [GCP_DEPLOYMENT_PLAN.md](tecnico/GCP_DEPLOYMENT_PLAN.md) — Plan de despliegue GCP (infra, costos, fases)
 
 ### planificacion/
 
@@ -49,10 +55,6 @@ App B2B offline-first para registrar el grabado de patentes vehiculares en vidri
 
 - [CURSOR_WORKFLOW.md](referencias/CURSOR_WORKFLOW.md) — Metodología de trabajo y convenciones
 - [LEY_20580.md](referencias/LEY_20580.md) — Referencia Ley 20.580 (stub)
-
-### Estado del backend
-
-- [BACKEND_STATUS_REPORT.md](BACKEND_STATUS_REPORT.md) — Estado actual, endpoints, tests, gaps
 
 ## Quick Start
 

@@ -23,7 +23,7 @@ Formulario principal de la app. Captura los datos del grabado de patente sobre l
 4. Si patente no coincide: error inline _"Las patentes no coinciden."_
 5. Si patente coincide: buscar duplicados en IndexedDB (últimos 30 días).
 6. Si duplicado encontrado: mostrar diálogo de confirmación con fecha del registro anterior.
-7. Usuario completa campos restantes (VIN, orden de trabajo, ley, tipo movimiento, tipo vehículo, formato impresión).
+7. Usuario completa campos restantes (VIN, orden de trabajo, tipo movimiento, tipo vehículo, formato impresión). La ley/caso no se muestra: se asigna automáticamente con la primera ley de `leyes_activas`.
 8. Tap "Guardar":
    - Generar UUID v4.
    - Guardar en IndexedDB con `estado_sync: "pendiente"`.
@@ -72,7 +72,8 @@ db.version(1).stores({
 - Usar `react-hook-form` con validación en `onBlur` y `onSubmit`.
 - Campo `patente`: input con `maxLength={8}`, `autoCapitalize`, transform a mayúsculas en `onChange`.
 - Campo `patente_confirmacion`: validar match contra `patente` en `onBlur`.
-- Selectores (`ley_caso`, `tipo_movimiento`, `tipo_vehiculo`, `formato_impresion`): cargar opciones desde IndexedDB (config cacheada en login).
+- **Ley/Caso**: no se muestra en la UI. Se asigna automáticamente con la primera ley de `leyes_activas` (config cacheada en login).
+- Selectores (`tipo_movimiento`, `tipo_vehiculo`, `formato_impresion`): cargar opciones desde IndexedDB (config cacheada en login).
 - `usuario_responsable`: campo de solo lectura, pre-llenado desde `useAuth()`.
 - Botón "Guardar" deshabilitado hasta que validación pase.
 
@@ -137,7 +138,7 @@ class Grabado(models.Model):
 | patente_confirmacion | Debe coincidir con patente | _"Las patentes no coinciden."_ |
 | vin_chasis | Opcional, si presente: exactamente 17 chars alfanuméricos | _"El VIN/Chasis debe tener 17 caracteres alfanuméricos."_ |
 | orden_trabajo | Opcional, max 50 chars | _"La orden de trabajo no puede exceder 50 caracteres."_ |
-| ley_caso | Requerido, debe existir en config cacheada | _"Selecciona una ley vigente."_ |
+| ley_caso | No mostrado en UI. Asignado automáticamente con la primera ley de `leyes_activas`. | — |
 | tipo_movimiento | Requerido, valor de enum | _"Selecciona el tipo de movimiento."_ |
 | tipo_vehiculo | Requerido, valor de enum | _"Selecciona el tipo de vehículo."_ |
 | formato_impresion | Requerido, valor de enum | _"Selecciona el formato de impresión."_ |
@@ -153,6 +154,7 @@ class Grabado(models.Model):
 7. `usuario_responsable` se pre-llena automáticamente y no es editable.
 8. Formulario funciona completamente offline (sin conexión a internet).
 9. Navegación a flujo multi-vidrio pasa el `uuid` del grabado creado.
+10. `ley_caso_id` y `ley_caso_nombre` se asignan automáticamente desde la primera ley en `leyes_activas` (campo oculto en el formulario).
 
 ## Casos Edge
 

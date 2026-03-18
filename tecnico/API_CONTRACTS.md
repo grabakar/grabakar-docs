@@ -380,7 +380,7 @@ Misma estructura que diario pero con `mes` (YYYY-MM) como parámetro en vez de `
 
 ---
 
-## 6. Reporte plataforma XLSX (Fase 2 — pendiente)
+## 6. Reporte plataforma XLSX (Fase 2 — implementado)
 
 ### GET /reportes/plataforma/
 
@@ -421,7 +421,7 @@ Columnas de día: 1 hasta `fecha.day - 1`. Agrupado por `fecha_sincronizacion`.
 }
 ```
 
-**Requiere modelo Sucursal** y campos adicionales. Ver [`REPORT_XLSX_IMPLEMENTATION.md`](../prompts/implementation_plans/REPORT_XLSX_IMPLEMENTATION.md).
+**Requiere modelo Sucursal** y campos adicionales (implementado).
 
 ---
 

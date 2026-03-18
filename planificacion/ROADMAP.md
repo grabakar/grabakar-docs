@@ -36,7 +36,7 @@ Estimaciones aproximadas, sujetas a capacidad del equipo.
 
 - Auto-sync: detectar conectividad, sincronizar en background
 - Reportes per-tenant JSON/CSV: diario y mensual (implementado)
-- **Reporte plataforma XLSX**: multi-tab, cross-tenant, month-to-date, agrupado por `fecha_sincronizacion`. Requiere modelo Sucursal + campos nuevos. Ver [REPORT_XLSX_IMPLEMENTATION.md](../prompts/implementation_plans/REPORT_XLSX_IMPLEMENTATION.md)
+- **Reporte plataforma XLSX**: multi-tab, cross-tenant, month-to-date, agrupado por `fecha_sincronizacion`. Requiere modelo Sucursal + campos nuevos.
 - Modelo Sucursal (branch por tenant) + migración
 - Celery task diaria para generación automática XLSX
 - Dashboard supervisor: vista de operadores, estados de sync, métricas básicas
@@ -45,7 +45,7 @@ Estimaciones aproximadas, sujetas a capacidad del equipo.
 
 **Dependencias**: Fase 1 completada. Endpoints de sync estables.
 
-**Estado**: Backend parcial — reportes per-tenant JSON/CSV completos (24 tests). Reporte plataforma XLSX y modelo Sucursal pendientes. Frontend pendiente.
+**Estado**: Backend completo (reportes JSON/CSV, XLSX y modelo Sucursal). Frontend pendiente.
 
 ## Fase 3 — Bluetooth (2 semanas)
 

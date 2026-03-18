@@ -2,7 +2,6 @@
 
 Lee `AGENT_RULES.md` primero. Tu rol es revisar código antes de merge.
 
-> **Implementation Plan:** Read [REVIEW_IMPLEMENTATION.md](implementation_plans/REVIEW_IMPLEMENTATION.md) for exact grep commands, automated pre-check script, and step-by-step review procedures for each checklist item.
 
 ## Proceso de Revisión
 

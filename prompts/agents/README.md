@@ -8,9 +8,9 @@ Cada archivo es la asignación para un agente que trabaja en una pista independi
 | [AGENT_SYNC.md](AGENT_SYNC.md) | GET /sync/status/, respuesta upload con errores | `feature/f1-sync-status` | Completado |
 | [AGENT_CI.md](AGENT_CI.md) | GitHub Actions: ruff + pytest | `feature/ci-backend` | Completado |
 
-El agente AGENT_REPORTES completó los reportes per-tenant (JSON/CSV). El trabajo de reportes XLSX plataforma está planificado en [`REPORT_XLSX_IMPLEMENTATION.md`](../implementation_plans/REPORT_XLSX_IMPLEMENTATION.md).
+El agente AGENT_REPORTES completó los reportes per-tenant (JSON/CSV). El trabajo de reportes XLSX plataforma ya fue completado.
 
-Estado general post-agentes: [BACKEND_STATUS_REPORT.md](../../BACKEND_STATUS_REPORT.md).
+**Notas:** Los planes de implementación base han sido ejecutados con éxito.
 
 ## Resultado
 

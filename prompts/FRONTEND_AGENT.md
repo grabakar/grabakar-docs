@@ -2,7 +2,6 @@
 
 Lee `AGENT_RULES.md` primero. Estas son reglas adicionales específicas para el frontend.
 
-> **Implementation Plan:** Read [FRONTEND_IMPLEMENTATION.md](implementation_plans/FRONTEND_IMPLEMENTATION.md) for exact step-by-step implementation instructions, code templates, component structures, and testing checklists for every frontend task.
 
 ## Stack
 

@@ -185,6 +185,70 @@ The documentation lives in `repos\grabakar-docs\`. Read in this order:
 
 ---
 
+## POC: Expose Backend via ngrok (APK with Remote Server)
+
+To let anyone with the APK use the app against the backend on this machine.
+
+### Quick test with temporary URL (no account domain needed)
+
+1. Start the stack and seed data: `docker compose up -d`, then `docker compose exec backend python manage.py seed_dev_data`.
+2. In another terminal run **`ngrok http 8000`** (no `--url`). ngrok will print a temporary HTTPS URL (e.g. `https://abc123.ngrok-free.app`).
+3. Copy that URL. In `grabakar-infra\.env` set:
+   - `DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,<host-from-url>` (e.g. `abc123.ngrok-free.app`)
+   - `CORS_ALLOWED_ORIGINS=http://localhost:5173,<full-url>` (e.g. `https://abc123.ngrok-free.app`)
+4. In `repos\grabakar-frontend\.env.production` set `VITE_API_URL=<full-url>`.
+5. Restart backend so it picks up the new env: `docker compose up -d --force-recreate backend`.
+6. Build APK: `cd repos\grabakar-frontend`, `npm run build`, `npx cap sync android`, `cd android`, `.\gradlew.bat assembleDebug`. Install the debug APK and test (users: `admin`/`supervisor`/`operador`, password `grabakar123`).
+
+If you stop and restart ngrok, you get a **new** temporary URL; then repeat steps 3–6 with the new URL. For a stable URL, use a static domain (below).
+
+### Optional: static domain (same URL after restart)
+
+### Prerequisites
+- ngrok installed (`winget install ngrok.ngrok` or download from ngrok.com).
+- Claim a free static domain at [dashboard.ngrok.com/domains](https://dashboard.ngrok.com/domains) (e.g. `grabakar.ngrok-free.app`).
+
+### 1. Backend env (infra)
+In `grabakar-infra\.env` set (replace with your ngrok domain):
+```
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,YOUR-DOMAIN.ngrok-free.app
+CORS_ALLOWED_ORIGINS=http://localhost:5173,https://YOUR-DOMAIN.ngrok-free.app
+```
+
+### 2. Frontend build env
+In `repos\grabakar-frontend\.env.production` set:
+```
+VITE_API_URL=https://YOUR-DOMAIN.ngrok-free.app
+```
+
+### 3. Start stack and tunnel
+Ensure ports 5432 and 6379 are free (stop local PostgreSQL/Redis if needed). Then:
+```powershell
+docker compose up -d
+docker compose exec backend python manage.py seed_dev_data
+```
+In a separate terminal, start the tunnel (replace with your static domain):
+```powershell
+ngrok http 8000 --url YOUR-DOMAIN.ngrok-free.app
+```
+Keep ngrok running. Backend must stay up (`docker compose up -d`).
+
+### 4. Build APK for POC
+The APK must be built with the ngrok URL baked in (Vite reads `.env.production` when you run `npm run build`):
+```powershell
+cd repos\grabakar-frontend
+npm run build
+npx cap sync android
+cd android
+.\gradlew.bat assembleDebug
+```
+APK path: `android\app\build\outputs\apk\debug\app-debug.apk`. Install on a device; it will call the ngrok URL. Test users: `admin` / `supervisor` / `operador`, password `grabakar123`.
+
+### 5. GCP migration later
+Only config changes: set `VITE_API_URL` and backend `ALLOWED_HOSTS`/`CORS_ALLOWED_ORIGINS` to the GCP URLs, rebuild APK and redeploy backend. See `tecnico/GCP_DEPLOYMENT_PLAN.md`.
+
+---
+
 ## Working Style
 
 Read `repos\grabakar-docs\prompts\AGENT_RULES.md` — it defines the full working style. Key points:
@@ -219,6 +283,8 @@ For frontend-specific rules: `repos\grabakar-docs\prompts\FRONTEND_AGENT.md`
 | Rebuild containers | `docker compose up -d --build` |
 | Update all repos | `scripts\update.bat` |
 | Build debug APK | `cd repos\grabakar-frontend\android && .\gradlew.bat assembleDebug` |
+| Build POC APK (ngrok) | Set `.env.production` with `VITE_API_URL=https://YOUR-DOMAIN.ngrok-free.app`, then `npm run build`, `npx cap sync android`, `.\gradlew.bat assembleDebug` in android\ |
+| Start ngrok tunnel | `ngrok http 8000` (temporary URL) or `ngrok http 8000 --url YOUR-DOMAIN.ngrok-free.app` (static domain) |
 
 ---
 

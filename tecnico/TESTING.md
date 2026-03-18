@@ -9,6 +9,7 @@
 | Frontend E2E | Playwright | Flujos completos en browser real |
 | Backend unit/integration | pytest + Django test client | Endpoints, serializers, services |
 | Backend fixtures | factory_boy | Generación de datos de prueba |
+| QA Test Agent | ADB + Android Emulator + gh CLI | Pruebas end-to-end automatizadas del .apk en emulador |
 | Lint frontend | ESLint + TypeScript strict | Calidad de código |
 | Lint backend | ruff | Calidad de código Python |
 
@@ -134,9 +135,9 @@ class TestSyncUpload:
 - **Wording exacto de errores**: testear que un error se muestra, no que dice exactamente "La patente debe tener entre 6 y 8 caracteres alfanuméricos." Esto cambia frecuentemente.
 - **Django admin**: funcionalidad CRUD del admin no requiere tests custom.
 
-## Protocolo de Testing Manual
+## Protocolo de Testing Manual / QA automatizado
 
-Ejecutar antes de cada release. Cada categoría es pass/fail.
+El sistema cuenta con una extensa [suite de QA (`grabakar-docs/qa/`)](../qa/QA_MASTER_PLAN.md) y documentación de un Agente Tester QA automatizado vía emulador Android. Estas pruebas deben ejecutarse, manual o automáticamente, antes de cada release. Cada categoría es pass/fail.
 
 ### 1. Login / Sesión
 

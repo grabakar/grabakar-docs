@@ -247,7 +247,7 @@ Login → Lista de Grabados (Home) → Formulario de Grabado → Flujo Multi-Vid
 - **VIN/Chassis** (opcional)
 - **Orden de Trabajo** (opcional)
 - **Responsable** (pre-llenado con usuario actual, editable)
-- **Ley / Caso** (selector basado en LeyCaso activas)
+- **Ley / Caso**: no mostrado en la UI; se asigna automáticamente con la única ley activa del tenant (desde `leyes_activas`)
 - **Tipo de Movimiento** (selector: Venta, Demo, Capacitación)
 - Botón **"Guardar"**: valida campos, guarda en local, inicia flujo multi-vidrio
 - Validación: si la patente ya existe en el dispositivo, mostrar alerta antes de guardar

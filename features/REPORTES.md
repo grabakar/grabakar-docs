@@ -1,25 +1,22 @@
 # REPORTES — Reporte XLSX Multi-Tab Plataforma
 
 **Fase**: 2
-**Dependencia**: Sync funcional, modelo Sucursal migrado.
-**Estado**: Planificado. Endpoints JSON/CSV per-tenant ya implementados.
+**Estado**: Implementado. Endpoints JSON/CSV per-tenant y XLSX plataforma funcionales.
 
 ## Contexto
 
-Existe un reporte externo auto-generado en formato XLSX con 3 pestañas que cubre **toda la plataforma** (cross-tenant). El objetivo es replicar esa estructura desde el backend de GrabaKar.
-
-Plan de implementación detallado: [`REPORT_XLSX_IMPLEMENTATION.md`](../prompts/implementation_plans/REPORT_XLSX_IMPLEMENTATION.md)
+El sistema genera reportes en formato XLSX con 3 pestañas que cubren **toda la plataforma** (cross-tenant), replicando la estructura de reportes operativos corporativos.
 
 ## Alcance
 
-### Ya implementado (per-tenant, JSON/CSV)
+### Ya implementado (per-tenant y plataforma)
 
 - `GET /api/v1/reportes/diario/` — JSON o CSV, filtrado por `fecha_creacion_local`, per-tenant
 - `GET /api/v1/reportes/mensual/` — misma lógica para rango mensual
-- Permisos: solo `supervisor` y `admin`
-- Celery task: `generar_reporte_diario`
+- `GET /api/v1/reportes/plataforma/` — XLSX descargarble, cross-tenant
+- Permisos: solo `supervisor` y `admin` (plataforma requiere `admin`)
+- Celery task: generadores diarios automatizados
 
-### Pendiente (plataforma, XLSX)
 
 Generación de reportes XLSX multi-tab que replica la estructura del reporte externo actual:
 
@@ -44,8 +41,6 @@ El reporte XLSX necesita campos que no existen en el modelo actual:
 | `Sucursal` | Nuevo modelo | Sucursal/branch dentro de un Tenant |
 | `tipo_cliente` | `Tenant` | Clasificación del cliente (ej: "CONCESIÓN") |
 | `responsable_texto` | `Grabado` | Texto libre del operador físico (distinto del usuario logueado) |
-
-Ver detalles en `REPORT_XLSX_IMPLEMENTATION.md` § 2.
 
 ## Endpoint
 

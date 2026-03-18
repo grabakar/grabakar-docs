@@ -2,7 +2,6 @@
 
 Lee `AGENT_RULES.md` primero. Estas son reglas adicionales específicas para el backend.
 
-> **Implementation Plan:** Read [BACKEND_IMPLEMENTATION.md](implementation_plans/BACKEND_IMPLEMENTATION.md) for exact step-by-step implementation instructions, code templates, file structures, and testing checklists for every backend task.
 
 ## Stack
 
