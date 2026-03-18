@@ -31,11 +31,13 @@ App B2B offline-first para registrar el grabado de patentes vehiculares en vidri
 - [TESTING.md](tecnico/TESTING.md) — Testing y cobertura
 - [DEPLOYMENT.md](tecnico/DEPLOYMENT.md) — Deployment y Docker
 - [SEGURIDAD.md](tecnico/SEGURIDAD.md) — Seguridad y autenticación
+- [API_DOCS_ESTRATEGIA.md](tecnico/API_DOCS_ESTRATEGIA.md) — Estándar de documentación y testing de API (drf-spectacular, Swagger UI)
 - [ADMIN_PANEL_API.md](tecnico/ADMIN_PANEL_API.md) — Contratos de API del panel admin
 - [ADMIN_PANEL_USAGE.md](tecnico/ADMIN_PANEL_USAGE.md) — Guía de uso/runbook del panel admin
 - [DEVOPS_CICD_STRATEGY.md](tecnico/DEVOPS_CICD_STRATEGY.md) — Estrategia DevOps y CI/CD en GCP ($0/mo)
 - [GCP_ARCHITECTURE.md](tecnico/GCP_ARCHITECTURE.md) — Infraestructura GCP desplegada (staging)
 - [GCP_DEPLOYMENT_PLAN.md](tecnico/GCP_DEPLOYMENT_PLAN.md) — Plan de despliegue GCP (infra, costos, fases)
+- [GCP_SOURCE_OF_TRUTH_RUNBOOK.md](tecnico/GCP_SOURCE_OF_TRUTH_RUNBOOK.md) — Checklist/runbook para que GCP sea fuente de verdad
 
 ### planificacion/
 

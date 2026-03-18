@@ -1227,7 +1227,14 @@ Everything described in this document costs $0/month:
 - [ ] Test: merge a trivial change to `main` in each repo, verify deploy succeeds
 - [ ] Verify: health check passes, frontends load in browser
 
-### Phase 4 — VM Hardening (1 hour)
+### Phase 4 — Staging Bootstrap (30 min)
+
+- [ ] Create `grabakar-backend/.github/workflows/bootstrap-staging.yml`
+- [ ] Run it once from the GitHub UI to ensure seeded users exist in staging
+- [ ] Prefer `load_fixtures=false` on repeated runs
+- [ ] Only use `reset_passwords=true` if you want to force known passwords
+
+### Phase 5 — VM Hardening (1 hour)
 
 - [ ] SSH into VM, install health check script (section 10.2)
 - [ ] Configure health check cron: `*/5 * * * * /home/$USER/grabakar-infra/scripts/vm_health_check.sh`
@@ -1235,7 +1242,7 @@ Everything described in this document costs $0/month:
 - [ ] Configure backup cron: `0 3 * * * /home/$USER/grabakar-infra/scripts/vm_backup_postgres.sh`
 - [ ] Verify: backup appears in `gs://grabakar-media-staging/backups/`
 
-### Phase 5 — Monitoring (30 min)
+### Phase 6 — Monitoring (30 min)
 
 - [ ] Create uptime check for `/api/v1/health/` (section 11.2)
 - [ ] Enable GCS object versioning on frontend and admin buckets
