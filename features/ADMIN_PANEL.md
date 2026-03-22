@@ -1,7 +1,7 @@
 # ADMIN_PANEL — Panel de Administración Web
 
 **Fase**: Nueva (post Fase 2)
-**Estado**: Planificado
+**Estado**: Implementado (RBAC por `Usuario.panel_persona`)
 
 ## Contexto
 
@@ -21,8 +21,8 @@ Panel web desktop-first donde el equipo de plataforma puede:
 
 | Quién | Acceso | Necesidad |
 |-------|--------|-----------|
-| Equipo GrabaKar (operaciones) | `is_staff=True` en modelo Usuario | Visibilidad completa cross-tenant, gestión de datos |
-| Soporte técnico | `is_staff=True` | Debugging de sync, búsqueda de grabados, estado de dispositivos |
+| Equipo GrabaKar (operaciones) | `panel_persona=platform_admin` (y `is_staff=True`) | Visibilidad completa cross-tenant, gestión de datos |
+| Soporte técnico | `panel_persona=platform_admin` (y `is_staff=True`) | Debugging de sync, búsqueda de grabados, estado de dispositivos |
 
 No es para operadores, supervisores ni admins de tenant. Esos roles siguen usando la app móvil/PWA.
 
@@ -58,20 +58,20 @@ grabado-patente-app/
 
 ## Autenticación y Permisos
 
-### Estrategia: `is_staff` de Django
+### Estrategia: `panel_persona` (RBAC del panel)
 
-El modelo `Usuario` hereda de `AbstractUser`, que ya incluye los campos `is_staff` y `is_superuser`. No se requiere migración.
+El modelo `Usuario` incorpora `panel_persona` (RBAC) para controlar acceso y alcance en `grabakar-admin`.
 
-- `is_staff=True` → acceso al admin panel y a todos los endpoints `/api/v1/admin/*`
-- El login usa el mismo endpoint existente `POST /api/v1/auth/login/`
-- El frontend admin verifica que el usuario retornado tenga `is_staff: true`; si no, rechaza el login con mensaje de error
-- Los endpoints admin usan una permission class `IsPlatformAdmin` que verifica `request.user.is_staff`
+- `panel_persona in {platform_admin, tenant_admin, panel_operator_readonly}` → acceso al panel (con alcance por tenant/sucursal).
+- El login usa el mismo endpoint existente `POST /api/v1/auth/login/`.
+- El frontend admin verifica `usuario.panel_persona` (no solo `is_staff`); `is_staff` se usa como compatibilidad/condición para `platform_admin`.
+- Los endpoints admin aplican scoping y restricciones según la matriz en `tecnico/RBAC_PANEL_ADMIN.md`.
 
-**No se crea un rol nuevo en `Usuario.Rol`.** Los roles (`operador`, `supervisor`, `admin`) son para lógica de tenant. `is_staff` es ortogonal — un usuario puede ser `admin` de su tenant Y tener `is_staff=True` para acceder al panel de plataforma.
+**No se crea un rol nuevo en `Usuario.Rol`.** Los roles (`operador`, `supervisor`, `admin`) son para lógica de tenant. `panel_persona` es ortogonal — un usuario puede ser `admin` de su tenant y tener `panel_persona=tenant_admin` (o `platform_admin` con `is_staff=True`).
 
 ### Respuesta de login ampliada
 
-El endpoint `POST /api/v1/auth/login/` ya retorna el objeto `usuario`. Se agrega `is_staff` al serializer:
+El endpoint `POST /api/v1/auth/login/` ya retorna el objeto `usuario`. Se agrega `panel_persona` (y `sucursal` cuando aplique) para que el frontend admin aplique RBAC:
 
 ```json
 {
@@ -80,6 +80,7 @@ El endpoint `POST /api/v1/auth/login/` ya retorna el objeto `usuario`. Se agrega
     "username": "plataforma_admin",
     "nombre_completo": "Admin GrabaKar",
     "rol": "admin",
+    "panel_persona": "platform_admin",
     "is_staff": true
   }
 }
@@ -130,7 +131,7 @@ grabakar-admin/
 │   │   ├── ReportesPage.tsx
 │   │   └── ConfigPage.tsx
 │   ├── contexts/
-│   │   └── AuthContext.tsx      # JWT auth, is_staff gate
+│   │   └── AuthContext.tsx      # JWT auth, panel_persona gate
 │   ├── hooks/
 │   │   └── useAuth.ts
 │   └── types/
@@ -149,7 +150,7 @@ grabakar-admin/
 
 ### 1. Login
 
-Pantalla simple: username + password. Al autenticarse, verifica que `usuario.is_staff === true`. Si no, muestra error: _"Tu cuenta no tiene acceso al panel de administración."_
+Pantalla simple: username + password. Al autenticarse, verifica que `usuario.panel_persona` esté habilitado para el panel (y que aplique RBAC). Si no, muestra error: _"Tu cuenta no tiene acceso al panel de administración."_
 
 No hay tokens offline ni lógica de desconexión — el panel es 100% online.
 
@@ -308,12 +309,12 @@ Interfaz para descargar los reportes existentes:
 |---------|-----------|
 | `api/views/admin.py` | ViewSets para todos los endpoints admin |
 | `api/serializers/admin.py` | Serializers con campos cross-tenant y annotaciones de conteo |
-| `api/permissions.py` | Permission class `IsPlatformAdmin` (actualizar existente) |
+| `api/permissions.py` | Permissions RBAC del panel (por `panel_persona`) |
 | `api/urls.py` | Registrar rutas `/admin/*` (actualizar existente) |
 
-### Sin cambios de modelo
+### Con cambios de modelo
 
-No se requieren migraciones. `is_staff` ya existe en `Usuario` via `AbstractUser`. Solo se necesita setear `is_staff=True` en los usuarios de plataforma via Django shell o admin.
+Se agregó `Usuario.panel_persona` (RBAC del panel). `is_staff` se mantiene como condición/compatibilidad para `platform_admin`.
 
 ### CORS
 
@@ -329,13 +330,13 @@ CORS_ALLOWED_ORIGINS = [
 
 ### Serializer de login
 
-Agregar `is_staff` al `UsuarioSerializer` existente para que el frontend admin pueda verificar acceso:
+Agregar `panel_persona` (y `sucursal` cuando aplique) al objeto `usuario` del login response para que el frontend admin aplique RBAC:
 
 ```python
 class UsuarioLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['id', 'username', 'nombre_completo', 'rol', 'is_staff']
+        fields = ['id', 'username', 'nombre_completo', 'rol', 'panel_persona', 'sucursal']
 ```
 
 ## Contratos de API
@@ -364,12 +365,12 @@ Pasos 1 y 2 son paralelizables. Pasos 5-10 son paralelizables entre sí una vez 
 
 ## Criterio de Aceptación
 
-1. Un usuario con `is_staff=True` puede autenticarse en el admin panel y ver el dashboard.
-2. Un usuario sin `is_staff=True` recibe error al intentar acceder.
+1. Un usuario con `panel_persona` habilitado puede autenticarse en el admin panel y ver el dashboard (según alcance).
+2. Un usuario con `panel_persona=none` recibe error al intentar acceder.
 3. El dashboard muestra KPIs actualizados y gráficos de los últimos 30 días.
 4. Se pueden crear, editar y ver tenants con todas sus sucursales y usuarios asociados.
 5. La tabla de grabados soporta filtros por tenant, fecha, estado de sync y búsqueda por patente.
 6. El detalle de un grabado muestra las impresiones de vidrio asociadas.
 7. Los reportes XLSX se descargan correctamente desde el panel.
 8. Todas las tablas usan paginación server-side.
-9. Los endpoints admin retornan 403 para usuarios sin `is_staff=True`.
+9. Los endpoints admin retornan 403 para usuarios sin permiso (según `panel_persona` y alcance).

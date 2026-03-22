@@ -7,7 +7,7 @@
 ## Navigation & Layout
 
 ### TC-UX-001 — Navegación intuitiva desde Home
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Login, observe Home screen
 
 **Expected**:
@@ -18,7 +18,7 @@
 - Connection status visible
 
 ### TC-UX-002 — Acceso con una mano en tablet
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Use app with one hand on tablet
 
 **Expected**:
@@ -26,7 +26,7 @@
 - No critical actions only in top corners
 
 ### TC-UX-003 — Responsive landscape / portrait
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Rotate device during use
 
 **Expected**:
@@ -36,7 +36,7 @@
 - Patente large text remains legible in both orientations
 
 ### TC-UX-004 — Touch targets ≥ 48x48dp
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Check all tappable elements
 
 **Expected**:
@@ -48,7 +48,7 @@
 ## Form UX
 
 ### TC-UX-010 — Formulario de grabado: flujo natural
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Fill grabado form top-to-bottom
 
 **Expected**:
@@ -58,7 +58,7 @@
 - Validation errors appear near their field
 
 ### TC-UX-011 — Error messages claros y en español
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Trigger various validation errors
 
 **Expected**:
@@ -68,7 +68,7 @@
 - No technical jargon
 
 ### TC-UX-012 — Toast notifications visible y temporales
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Save a grabado, print on a glass
 
 **Expected**:
@@ -77,7 +77,7 @@
 - Readable text size and contrast
 
 ### TC-UX-013 — Loading states for all actions
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Save grabado, login, sync
 
 **Expected**:
@@ -90,7 +90,7 @@
 ## Offline Experience
 
 ### TC-UX-020 — Indicador de conectividad siempre visible
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Observe app in both online and offline states
 
 **Expected**:
@@ -100,7 +100,7 @@
 - Transition is immediate (< 3 seconds)
 
 ### TC-UX-021 — Mensajes offline claros
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Try online-only actions while offline
 
 **Expected**:
@@ -109,7 +109,7 @@
 - No cryptic error codes
 
 ### TC-UX-022 — No confusión sobre estado de registros
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Create grabados offline, check list
 
 **Expected**:
@@ -122,7 +122,7 @@
 ## Poka-Yoke (Error Prevention)
 
 ### TC-UX-030 — Doble digitación de patente
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Enter patente, then must re-enter to confirm
 
 **Expected**:
@@ -131,7 +131,7 @@
 - Paste disabled on confirmation field
 
 ### TC-UX-031 — Patente grande en multi-vidrio
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Enter multi-vidrio flow
 
 **Expected**:
@@ -141,7 +141,7 @@
 - Visible before each print action
 
 ### TC-UX-032 — Confirmaciones para acciones destructivas
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Try to skip a glass, abandon flow, logout
 
 **Expected**:
@@ -154,7 +154,7 @@
 ## Accessibility
 
 ### TC-UX-040 — Contraste de texto suficiente
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Check text against backgrounds
 
 **Expected**:
@@ -163,7 +163,7 @@
 - Tenant colors may not meet this (known limitation)
 
 ### TC-UX-041 — Font sizes readable
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Check all text on a real device/emulator
 
 **Expected**:
@@ -172,7 +172,7 @@
 - No text too small to read on tablet
 
 ### TC-UX-042 — Screen reader compatible (basic)
-**Priority**: P3  
+**Priority**: P3
 **Steps**: Enable TalkBack on emulator
 
 **Expected**:
@@ -185,7 +185,7 @@
 ## Feedback & Confirmation
 
 ### TC-UX-050 — Confirmación visual al guardar grabado
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Save a grabado
 
 **Expected**:
@@ -194,7 +194,7 @@
 - Clear path forward ("Continuar a Grabado de Vidrios")
 
 ### TC-UX-051 — Confirmación visual al finalizar flujo
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Finalize multi-vidrio flow
 
 **Expected**:
@@ -203,7 +203,7 @@
 - New record visible in list
 
 ### TC-UX-052 — Error feedback no bloqueante
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Trigger a sync error
 
 **Expected**:

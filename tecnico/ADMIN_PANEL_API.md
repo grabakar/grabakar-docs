@@ -3,35 +3,26 @@
 Base URL: `/api/v1/admin/`
 Formato: JSON
 Autenticación: JWT Bearer token (header `Authorization: Bearer <token>`)
-Permiso requerido: `is_staff=True` en el usuario autenticado
+Permiso requerido: `Usuario.panel_persona != 'none'` (RBAC del panel). Para `platform_admin`, además `is_staff=True` como condición de compatibilidad.
 Idioma de mensajes de error: Español
 
 ---
 
-## Permiso: IsPlatformAdmin
+## Permiso: RBAC del panel
 
-Todos los endpoints bajo `/api/v1/admin/` usan esta permission class:
+Todos los endpoints bajo `/api/v1/admin/` aplican la matriz y el filtrado definidos en `tecnico/RBAC_PANEL_ADMIN.md`.
 
-```python
-from rest_framework.permissions import BasePermission
+Resumen por persona:
 
-class IsPlatformAdmin(BasePermission):
-    """Acceso restringido a usuarios de plataforma (is_staff=True)."""
-    message = "No tienes acceso al panel de administración."
+- `platform_admin`: acceso global cross-tenant.
+- `tenant_admin`: alcance restringido a su tenant.
+- `panel_operator_readonly`: solo lectura (GET) y alcance `tenant_id` + `sucursal_id`.
 
-    def has_permission(self, request, view):
-        return (
-            request.user
-            and request.user.is_authenticated
-            and request.user.is_staff
-        )
-```
-
-Response 403 estándar para usuarios sin `is_staff`:
+Response 403 estándar para usuarios sin permiso:
 
 ```json
 {
-  "error": "No tienes acceso al panel de administración.",
+  "error": "No tienes permiso para esta operación",
   "code": "PERMISSION_DENIED"
 }
 ```
@@ -465,7 +456,7 @@ Detalle de usuario. Misma estructura que en listado.
 
 ### PATCH /admin/usuarios/{id}/
 
-Actualización parcial. Campos editables: `nombre_completo`, `email`, `rol`, `sucursal_id`, `activo`, `is_staff`. Password se maneja por separado.
+Actualización parcial. Campos editables: `nombre_completo`, `email`, `rol`, `sucursal_id`, `activo`, `panel_persona`, `is_staff` (compatibilidad `platform_admin`). Password se maneja por separado.
 
 ### POST /admin/usuarios/{id}/reset-password/
 
@@ -644,7 +635,7 @@ Actualiza una ley. Campos: `nombre`, `descripcion`, `activa`.
 
 ### Modificación al serializer de `POST /api/v1/auth/login/`
 
-Agregar `is_staff` al objeto `usuario` en la response. Esto permite al frontend admin verificar acceso sin un endpoint adicional.
+Agregar `usuario.panel_persona` (y `usuario.sucursal` cuando aplique) a la response. `is_staff` se mantiene solo como compatibilidad para `platform_admin`.
 
 **Response actual (ampliada):**
 
@@ -658,6 +649,7 @@ Agregar `is_staff` al objeto `usuario` en la response. Esto permite al frontend 
     "username": "plataforma_admin",
     "nombre_completo": "Admin GrabaKar",
     "rol": "admin",
+    "panel_persona": "platform_admin",
     "is_staff": true
   },
   "tenant": { "..." : "..." },
@@ -683,14 +675,14 @@ Impacto: campo nuevo, no rompe la app móvil (simplemente lo ignora).
 
 | Archivo | Cambio |
 |---------|--------|
-| `api/permissions.py` | Agregar `IsPlatformAdmin` |
+| `api/permissions.py` | Agregar permisos RBAC del panel (por `panel_persona`) |
 | `api/urls.py` | Registrar router con rutas `/admin/*` |
-| `api/serializers/auth.py` | Agregar `is_staff` al serializer de login |
+| `api/serializers/auth.py` | Agregar `panel_persona` (y `sucursal` cuando aplique) al login response (además de `is_staff`) |
 | `config/settings/base.py` | Agregar CORS origin del admin panel |
 
-### Sin migraciones
+### Con migraciones
 
-Todos los campos usados (`is_staff`, `is_superuser`, `last_login`, `date_joined`) ya existen en `AbstractUser`. No se requiere `makemigrations`.
+Se agregó `Usuario.panel_persona` (ver migración `0003_usuario_panel_persona.py`). `is_staff` se mantiene como compatibilidad para `platform_admin`.
 
 ---
 
@@ -700,7 +692,7 @@ Mismos códigos que la API principal (ver [API_CONTRACTS.md](API_CONTRACTS.md#7-
 
 | Código HTTP | Code | Descripción |
 |---|---|---|
-| 403 | PLATFORM_ACCESS_DENIED | Usuario autenticado no tiene `is_staff=True` |
+| 403 | PERMISSION_DENIED | Usuario autenticado no tiene permisos para esta operación |
 | 400 | DUPLICATE_SUCURSAL | Combinación `(tenant_id, nombre)` ya existe |
 | 400 | INVALID_SUCURSAL_TENANT | `sucursal_id` no pertenece al `tenant_id` del usuario |
 
@@ -733,3 +725,46 @@ El admin panel es una SPA estática. Opciones:
 2. **Cloud Run** — contenedor Nginx sirviendo el build, si se necesita más control
 
 La API es la misma instancia de Cloud Run del backend existente. Solo se agregan rutas.
+
+---
+
+## Guía Operacional
+
+### Acceso al panel
+
+Solo usuarios con `panel_persona` habilitado: `platform_admin`, `tenant_admin` o `panel_operator_readonly`. Los roles APK (`operador/supervisor/admin`) son independientes de las personas del panel.
+
+**URL local:** `http://localhost:5174` (backend en `:8000`, CORS ya configurado)
+
+```bash
+cd grabakar-admin && npm install && npm run dev
+```
+
+### Habilitar acceso (desde shell o Django Admin)
+
+```python
+from api.models import Usuario
+u = Usuario.objects.get(username="plataforma_admin")
+u.panel_persona = "platform_admin"
+u.is_staff = True   # requerido para platform_admin
+u.save()
+```
+
+### Tokens (admin panel)
+
+El panel guarda en `localStorage`: `admin_access_token`, `admin_refresh_token`, `admin_user`. Es **online-only** — no usa `offline_token`.
+
+### Troubleshooting
+
+| Síntoma | Causa | Solución |
+|---------|-------|----------|
+| "Tu cuenta no tiene acceso al panel…" | `panel_persona=none` | Asignar `panel_persona` correcto (ver arriba) |
+| 403 en `/api/v1/admin/*` | Token inválido o `is_staff=False` | Re-login; verificar `panel_persona=platform_admin` e `is_staff=True` |
+| CORS error | Origin no en `CORS_ALLOWED_ORIGINS` | Agregar `http://localhost:5174` (dev) o `https://admin.<dominio>` (prod) |
+| Redirige a `/login` inesperadamente | 401 — token expirado | Re-autenticar; revisar expiración JWT y reloj del sistema |
+
+### Notas de seguridad operacional
+
+- No otorgar `platform_admin` / `is_staff=True` a usuarios de concesionarias
+- Usar contraseñas fuertes y rotación para cuentas de plataforma
+- Auditar accesos vía `Usuario.last_login` en Django Admin

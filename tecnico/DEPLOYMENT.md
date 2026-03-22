@@ -227,36 +227,37 @@ PR abierto → ESLint + tsc → Vitest (70% coverage) → build Vite → [merge]
 
 ### Deploy workflow (backend)
 
+Usa Workload Identity Federation (OIDC) — no requiere secrets de GitHub.
+
 ```yaml
-# .github/workflows/deploy-backend.yml
-name: Deploy Backend
+# .github/workflows/deploy.yml (simplificado)
+name: Deploy Backend (GCP Free Tier)
 on:
   push:
     branches: [main]
-  workflow_dispatch:
-    inputs:
-      environment:
-        type: choice
-        options: [staging, production]
-        default: staging
+  workflow_dispatch: {}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'staging' }}
+    permissions:
+      contents: read
+      id-token: write   # Requerido para WIF OIDC
     steps:
       - uses: actions/checkout@v4
       - uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          workload_identity_provider: 'projects/<PROJECT_NUMBER>/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider-2'
+          service_account: 'github-actions@<PROJECT_ID>.iam.gserviceaccount.com'
       - uses: google-github-actions/setup-gcloud@v2
-      - run: gcloud builds submit --tag gcr.io/${{ vars.GCP_PROJECT }}/grabakar-backend
       - run: |
-          gcloud run deploy grabakar-backend \
-            --image gcr.io/${{ vars.GCP_PROJECT }}/grabakar-backend \
-            --region ${{ vars.GCP_REGION }} \
-            --platform managed
+          gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+          docker build --platform linux/amd64 -t $AR_IMAGE:$TAG .
+          docker push $AR_IMAGE:$TAG
+      - run: gcloud run deploy grabakar-backend --image $AR_IMAGE:$TAG ...
 ```
+
+Ver los workflows reales en cada repositorio: `grabakar-backend/.github/workflows/deploy.yml`
 
 ## Staging vs Producción
 

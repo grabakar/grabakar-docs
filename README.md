@@ -1,67 +1,119 @@
-# GrabaKar — Sistema de Grabado de Patentes
+# GrabaKar — Documentación
 
-App B2B offline-first para registrar el grabado de patentes vehiculares en vidrios, orientada a operadores en terreno en Chile. Multi-tenant, white-label, con sincronización automática.
+App B2B offline-first para grabado de patentes vehiculares en Chile (Ley 20.580). Multi-tenant, white-label, con sincronización automática.
 
-## Estructura de Documentación
+**Estado actual**: Fases 0–1 completas. Fase 2 backend completa, frontend pendiente. Ver [ROADMAP](planificacion/ROADMAP.md).
 
-### producto/
+---
 
-- [VISION.md](producto/VISION.md) — Visión del producto, problema, solución, diferenciadores
-- [GLOSARIO.md](producto/GLOSARIO.md) — Glosario de términos de dominio
-- [ROLES_USUARIOS.md](producto/ROLES_USUARIOS.md) — Roles, permisos, matriz de acceso
+## Índice
 
-### features/
+### `tecnico/` — Referencia técnica
 
-- [LOGIN_SESION.md](features/LOGIN_SESION.md) — Autenticación y sesión offline
-- [GRABADO_PATENTE.md](features/GRABADO_PATENTE.md) — Registro de grabado (formulario principal)
-- [FLUJO_MULTI_VIDRIO.md](features/FLUJO_MULTI_VIDRIO.md) — Flujo iterativo por vidrio (Poka-Yoke)
-- [SINCRONIZACION_OFFLINE.md](features/SINCRONIZACION_OFFLINE.md) — Estrategia de sync offline-first
-- [WHITE_LABELING.md](features/WHITE_LABELING.md) — Multi-tenant y personalización de marca
-- [BLUETOOTH_IMPRESION.md](features/BLUETOOTH_IMPRESION.md) — Impresión Bluetooth (stub — Fase 3)
-- [CAMARA_OCR.md](features/CAMARA_OCR.md) — Escaneo OCR de patente/VIN (stub — Fase 4)
-- [REPORTES.md](features/REPORTES.md) — Reportes XLSX plataforma + JSON/CSV per-tenant (Fase 2)
-- [ADMIN_PANEL.md](features/ADMIN_PANEL.md) — Panel de administración web (cross-tenant, analíticas, CRUD)
+| Documento | Qué cubre |
+|-----------|-----------|
+| [ARQUITECTURA.md](tecnico/ARQUITECTURA.md) | Decisiones de arquitectura, stack, diagrama de componentes |
+| [MODELO_DATOS.md](tecnico/MODELO_DATOS.md) | ERD, entidades, índices, esquema IndexedDB |
+| [API_CONTRACTS.md](tecnico/API_CONTRACTS.md) | Contratos REST API (APK): auth, grabados, sync, reportes |
+| [ADMIN_PANEL_API.md](tecnico/ADMIN_PANEL_API.md) | Contratos API panel admin + guía operacional |
+| [RBAC_PANEL_ADMIN.md](tecnico/RBAC_PANEL_ADMIN.md) | Matriz RBAC de las 3 personas del panel web |
+| [SYNC_STRATEGY.md](tecnico/SYNC_STRATEGY.md) | Estrategia offline-first: sync, conflictos, purga |
+| [SEGURIDAD.md](tecnico/SEGURIDAD.md) | JWT, tokens, rate limiting, OWASP, multi-tenant |
+| [TESTING.md](tecnico/TESTING.md) | Estrategia de testing, cobertura, herramientas |
+| [DEPLOYMENT.md](tecnico/DEPLOYMENT.md) | Docker local, variables de entorno, Dockerfile |
+| [GCP.md](tecnico/GCP.md) | Infraestructura GCP, deploy manual, bootstrap, operación VM |
+| [DEVOPS_CICD_STRATEGY.md](tecnico/DEVOPS_CICD_STRATEGY.md) | GitHub Actions CI/CD: pipelines, workflows, branch strategy |
+| [TECHNICAL_ASSESSMENT.md](tecnico/TECHNICAL_ASSESSMENT.md) | Diagnóstico de calidad, issues resueltos y pendientes |
+| [deployments/](tecnico/deployments/) | Runbooks de despliegue específicos |
 
-### tecnico/
+---
 
-- [API_CONTRACTS.md](tecnico/API_CONTRACTS.md) — Contratos de API REST
-- [ARQUITECTURA.md](tecnico/ARQUITECTURA.md) — Arquitectura del sistema
-- [MODELO_DATOS.md](tecnico/MODELO_DATOS.md) — Modelo de datos (ERD, entidades, índices)
-- [SYNC_STRATEGY.md](tecnico/SYNC_STRATEGY.md) — Estrategia de sincronización offline
-- [TESTING.md](tecnico/TESTING.md) — Testing y cobertura
-- [DEPLOYMENT.md](tecnico/DEPLOYMENT.md) — Deployment y Docker
-- [SEGURIDAD.md](tecnico/SEGURIDAD.md) — Seguridad y autenticación
-- [API_DOCS_ESTRATEGIA.md](tecnico/API_DOCS_ESTRATEGIA.md) — Estándar de documentación y testing de API (drf-spectacular, Swagger UI)
-- [ADMIN_PANEL_API.md](tecnico/ADMIN_PANEL_API.md) — Contratos de API del panel admin
-- [ADMIN_PANEL_USAGE.md](tecnico/ADMIN_PANEL_USAGE.md) — Guía de uso/runbook del panel admin
-- [DEVOPS_CICD_STRATEGY.md](tecnico/DEVOPS_CICD_STRATEGY.md) — Estrategia DevOps y CI/CD en GCP ($0/mo)
-- [GCP_ARCHITECTURE.md](tecnico/GCP_ARCHITECTURE.md) — Infraestructura GCP desplegada (staging)
-- [GCP_DEPLOYMENT_PLAN.md](tecnico/GCP_DEPLOYMENT_PLAN.md) — Plan de despliegue GCP (infra, costos, fases)
-- [GCP_SOURCE_OF_TRUTH_RUNBOOK.md](tecnico/GCP_SOURCE_OF_TRUTH_RUNBOOK.md) — Checklist/runbook para que GCP sea fuente de verdad
+### `producto/` — Especificación de producto
 
-### planificacion/
+| Documento | Qué cubre |
+|-----------|-----------|
+| [VISION.md](producto/VISION.md) | Problema, solución, usuarios objetivo, diferenciadores |
+| [ROLES_USUARIOS.md](producto/ROLES_USUARIOS.md) | Roles APK (operador/supervisor/admin), matriz de permisos |
+| [MODELO_CLIENTE.md](producto/MODELO_CLIENTE.md) | Tenant → Sucursal → Usuario, facturación, datos legales (P3-03) |
+| [GLOSARIO.md](producto/GLOSARIO.md) | Términos de dominio |
 
-- [ROADMAP.md](planificacion/ROADMAP.md) — Fases del proyecto y timeline
-- [BACKLOG.md](planificacion/BACKLOG.md) — Backlog priorizado por fase
+---
 
-### prompts/
+### `features/` — Especificaciones de feature
 
-- [AGENT_RULES.md](prompts/AGENT_RULES.md) — Reglas base para agentes AI
-- [FRONTEND_AGENT.md](prompts/FRONTEND_AGENT.md) — Prompt de agente frontend
-- [BACKEND_AGENT.md](prompts/BACKEND_AGENT.md) — Prompt de agente backend
-- [REVIEW_AGENT.md](prompts/REVIEW_AGENT.md) — Prompt de agente de revisión
-- `implementation_plans/` — Planes de implementación detallados
-- `agents/` — Prompts de agentes paralelos backend
+| Documento | Estado | Qué cubre |
+|-----------|--------|-----------|
+| [LOGIN_SESION.md](features/LOGIN_SESION.md) | ✅ | Auth, tokens, sesión offline, auto-refresh |
+| [GRABADO_PATENTE.md](features/GRABADO_PATENTE.md) | ✅ | Formulario principal, validaciones, duplicados, anti-fraude |
+| [FLUJO_MULTI_VIDRIO.md](features/FLUJO_MULTI_VIDRIO.md) | ✅ | Poka-Yoke por vidrio, impresiones, finalización |
+| [SINCRONIZACION_OFFLINE.md](features/SINCRONIZACION_OFFLINE.md) | ✅ backend / ⏳ frontend | Batch upload, conflictos, backoff, purga |
+| [WHITE_LABELING.md](features/WHITE_LABELING.md) | ✅ | CSS variables, branding por tenant |
+| [REPORTES.md](features/REPORTES.md) | ✅ backend / ⏳ frontend | CSV/JSON diario-mensual, XLSX plataforma |
+| [ADMIN_PANEL.md](features/ADMIN_PANEL.md) | ✅ | Especificación del panel web admin |
+| [dashboard-print.md](features/dashboard-print.md) | ✅ | Convención: dashboards y billing solo en panel, no en APK |
+| [FLUJO_REIMPRESION_APK.md](features/FLUJO_REIMPRESION_APK.md) | ⏳ P3-05/06 | Reimpresión en pantalla final, re-ingreso misma patente |
+| [UX_SUCURSAL_UNICA_PANEL.md](features/UX_SUCURSAL_UNICA_PANEL.md) | ⏳ P3-04 | UX simplificada para tenants con una sola sucursal |
+| [BLUETOOTH_IMPRESION.md](features/BLUETOOTH_IMPRESION.md) | 🔲 Fase 3 | ESC/POS + ZPL, Capacitor plugin, PrintService |
+| [CAMARA_OCR.md](features/CAMARA_OCR.md) | 🔲 Fase 4 | Escaneo patente/VIN, Tesseract.js |
 
-### referencias/
+---
 
-- [CURSOR_WORKFLOW.md](referencias/CURSOR_WORKFLOW.md) — Metodología de trabajo y convenciones
-- [LEY_20580.md](referencias/LEY_20580.md) — Referencia Ley 20.580 (stub)
+### `planificacion/` — Roadmap y backlog
 
-## Quick Start
+| Documento | Qué cubre |
+|-----------|-----------|
+| [ROADMAP.md](planificacion/ROADMAP.md) | Fases 0–5 con estado actual, mejoras P3.x |
+| [BACKLOG.md](planificacion/BACKLOG.md) | Tareas priorizadas con criterios de aceptación y dependencias |
 
-Para comenzar a desarrollar, leer en orden:
+---
 
-1. `prompts/AGENT_RULES.md` — Reglas y contexto del proyecto
-2. `planificacion/BACKLOG.md` — Tareas priorizadas
-3. El feature spec de tu tarea asignada
+### `qa/` — Calidad y testing
+
+| Tipo | Documentos |
+|------|-----------|
+| **Metodología** | [QA_MASTER_PLAN.md](qa/QA_MASTER_PLAN.md), [QA_AGENT_WORKFLOW.md](qa/QA_AGENT_WORKFLOW.md), [QA_IN_DEVICE_RUNBOOK.md](qa/QA_IN_DEVICE_RUNBOOK.md) |
+| **Setup y herramientas** | [QA_AGENT_SETUP.md](qa/QA_AGENT_SETUP.md), [QA_GITHUB_ISSUES.md](qa/QA_GITHUB_ISSUES.md) |
+| **Checklist release** | [QA_CHECKLIST_RELEASE.md](qa/QA_CHECKLIST_RELEASE.md) |
+| **Casos de prueba** | `TC_*.md` — Login, Grabado, Multi-Vidrio, Sync, Reportes, Seguridad, White-Label, RBAC, Admin Panel, Rendimiento, Usabilidad, Edge Cases, Backend |
+| **Registros de ejecución** | `REGISTRO_QA_*.md` — Evidencia de baterías ejecutadas |
+| **User stories** | [US_ADMIN_PANEL.md](qa/US_ADMIN_PANEL.md) |
+| **Plantilla** | [REGISTRO_QA_PLANTILLA.md](qa/REGISTRO_QA_PLANTILLA.md) |
+
+---
+
+### `prompts/` — Agentes y reglas de desarrollo
+
+| Documento | Qué cubre |
+|-----------|-----------|
+| [AGENT_RULES.md](prompts/AGENT_RULES.md) | Reglas universales para todos los agentes (PDCA, commits, scope) |
+| [BACKEND_AGENT.md](prompts/BACKEND_AGENT.md) | Contexto y reglas para desarrollo Django/DRF |
+| [FRONTEND_AGENT.md](prompts/FRONTEND_AGENT.md) | Contexto y reglas para desarrollo React/Dexie offline-first |
+| [ONBOARDING_AGENT.md](prompts/ONBOARDING_AGENT.md) | Setup del entorno de desarrollo para nuevos miembros |
+
+> Review de PRs y baterías de QA están en los skills de Claude Code (`/review`, `/qa`).
+
+---
+
+### `referencias/`
+
+| Documento | Qué cubre |
+|-----------|-----------|
+| [LEY_20580.md](referencias/LEY_20580.md) | Referencia legal — Ley de grabado de patentes (Chile) |
+
+---
+
+## Quick Start para desarrollo
+
+1. Leer `prompts/AGENT_RULES.md`
+2. Ver estado actual en `planificacion/ROADMAP.md`
+3. Tomar tarea de `planificacion/BACKLOG.md`
+4. Leer el feature spec correspondiente en `features/`
+5. Consultar `tecnico/API_CONTRACTS.md` y `tecnico/MODELO_DATOS.md`
+6. Crear rama `feature/<fase>-<nombre-corto>` y trabajar
+
+## Convenciones
+
+- **Idioma**: Narrativa en español. Identificadores técnicos (campos, endpoints) en inglés o español según convención del código.
+- **Commits**: Conventional Commits en español (`feat:`, `fix:`, `chore:`)
+- **Ramas**: `feature/<fase>-<nombre-corto>` (ej: `feature/p3-rut-cliente`)
+- **Estado en docs**: ✅ implementado · ⏳ pendiente · 🔲 no iniciado

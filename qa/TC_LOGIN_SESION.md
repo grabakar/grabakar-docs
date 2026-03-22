@@ -1,7 +1,7 @@
 # TC_LOGIN_SESION — Test Cases: Login y Gestión de Sesión
 
-**Module**: Authentication & Session Management  
-**Feature Docs**: [LOGIN_SESION.md](../features/LOGIN_SESION.md), [SEGURIDAD.md](../tecnico/SEGURIDAD.md)  
+**Module**: Authentication & Session Management
+**Feature Docs**: [LOGIN_SESION.md](../features/LOGIN_SESION.md), [SEGURIDAD.md](../tecnico/SEGURIDAD.md)
 **API Contract**: `POST /api/v1/auth/login/`, `POST /api/v1/auth/refresh/`
 
 ---
@@ -9,8 +9,8 @@
 ## Happy Path
 
 ### TC-LOGIN-001 — Login exitoso con credenciales válidas
-**Priority**: P0  
-**Preconditions**: Backend running, internet available, user `operador1/secret123` exists  
+**Priority**: P0
+**Preconditions**: Backend running, internet available, user `operador1/secret123` exists
 **Steps**:
 1. Open app on emulator
 2. Verify login screen is displayed
@@ -26,8 +26,8 @@
 - Connection indicator shows green/online
 
 ### TC-LOGIN-002 — Login pre-llenado de campos del operador
-**Priority**: P1  
-**Preconditions**: Logged in successfully once before  
+**Priority**: P1
+**Preconditions**: Logged in successfully once before
 **Steps**:
 1. Log out
 2. Return to login screen
@@ -38,8 +38,8 @@
 - Tenant logo shown if cached config exists
 
 ### TC-LOGIN-003 — Login carga config de tenant completa
-**Priority**: P0  
-**Preconditions**: Backend has tenant with custom branding  
+**Priority**: P0
+**Preconditions**: Backend has tenant with custom branding
 **Steps**:
 1. Login as user belonging to tenant "VidrioPro Chile"
 2. Navigate to Home
@@ -55,7 +55,7 @@
 ## Negative / Validation Tests
 
 ### TC-LOGIN-010 — Login con username vacío
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Leave username empty
 2. Enter password
@@ -66,7 +66,7 @@
 - No network request made
 
 ### TC-LOGIN-011 — Login con password vacío
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Enter username
 2. Leave password empty
@@ -76,7 +76,7 @@
 - Button is disabled OR error: _"La contraseña debe tener al menos 6 caracteres."_
 
 ### TC-LOGIN-012 — Login con password < 6 caracteres
-**Priority**: P2  
+**Priority**: P2
 **Steps**:
 1. Enter username `operador1`
 2. Enter password `abc` (3 chars)
@@ -87,7 +87,7 @@
 - No network request or returns 401
 
 ### TC-LOGIN-013 — Login con credenciales inválidas
-**Priority**: P0  
+**Priority**: P0
 **Steps**:
 1. Enter username `operador1`
 2. Enter password `wrongpassword`
@@ -100,7 +100,7 @@
 - Password field is cleared
 
 ### TC-LOGIN-014 — Login con usuario inexistente
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Enter username `nonexistent_user`
 2. Enter password `anypassword123`
@@ -111,8 +111,8 @@
 - Response time similar to valid-user-wrong-password (timing attack prevention)
 
 ### TC-LOGIN-015 — Login con usuario inactivo/desactivado
-**Priority**: P1  
-**Preconditions**: User `desactivado1` exists with `activo=False`  
+**Priority**: P1
+**Preconditions**: User `desactivado1` exists with `activo=False`
 **Steps**:
 1. Login with `desactivado1` credentials
 
@@ -120,8 +120,8 @@
 - Error: _"Tu cuenta ha sido desactivada. Contacta al administrador."_ (or generic 401)
 
 ### TC-LOGIN-016 — Login con tenant desactivado
-**Priority**: P1  
-**Preconditions**: User exists but their tenant has `activo=False`  
+**Priority**: P1
+**Preconditions**: User exists but their tenant has `activo=False`
 **Steps**:
 1. Login with user from inactive tenant
 
@@ -133,8 +133,8 @@
 ## Offline Login Tests
 
 ### TC-LOGIN-020 — Login sin conexión a internet
-**Priority**: P0  
-**Preconditions**: Device in airplane mode, no cached session  
+**Priority**: P0
+**Preconditions**: Device in airplane mode, no cached session
 **Steps**:
 1. Enable airplane mode on emulator
 2. Open app
@@ -146,8 +146,8 @@
 - Connection indicator shows red/offline
 
 ### TC-LOGIN-021 — Auto-login con offline token válido
-**Priority**: P0  
-**Preconditions**: User logged in previously, offline token not expired (< 72h)  
+**Priority**: P0
+**Preconditions**: User logged in previously, offline token not expired (< 72h)
 **Steps**:
 1. Close app
 2. Enable airplane mode
@@ -160,8 +160,8 @@
 - User can access full local functionality
 
 ### TC-LOGIN-022 — Offline token expirado sin conexión
-**Priority**: P0  
-**Preconditions**: Offline token has expired (> 72h since login)  
+**Priority**: P0
+**Preconditions**: Offline token has expired (> 72h since login)
 **Steps**:
 1. (Simulate by advancing device clock > 72h)
 2. Enable airplane mode
@@ -173,8 +173,8 @@
 - Cannot access any features
 
 ### TC-LOGIN-023 — Offline token expirado con conexión disponible
-**Priority**: P1  
-**Preconditions**: Offline token expired  
+**Priority**: P1
+**Preconditions**: Offline token expired
 **Steps**:
 1. Open app with connection available
 
@@ -188,8 +188,8 @@
 ## Token Lifecycle Tests
 
 ### TC-LOGIN-030 — Access token auto-refresh antes de expirar
-**Priority**: P0  
-**Preconditions**: Logged in, access token approaching expiry (< 5 min remaining)  
+**Priority**: P0
+**Preconditions**: Logged in, access token approaching expiry (< 5 min remaining)
 **Steps**:
 1. Wait until access token has < 5 min remaining
 2. Observe app behavior (background refresh)
@@ -200,7 +200,7 @@
 - App continues functioning
 
 ### TC-LOGIN-031 — Refresh token expirado con offline token válido
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Simulate refresh token expiry (> 7 days)
 2. App tries to refresh access token → fails with 401
@@ -211,7 +211,7 @@
 - If offline token also expired → redirect to login
 
 ### TC-LOGIN-032 — Refresh token expirado sin offline token
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Simulate both refresh and offline token expiry
 
@@ -224,8 +224,8 @@
 ## Logout Tests
 
 ### TC-LOGIN-040 — Logout estándar
-**Priority**: P0  
-**Preconditions**: User logged in, some unsynchronized records exist  
+**Priority**: P0
+**Preconditions**: User logged in, some unsynchronized records exist
 **Steps**:
 1. Open menu/settings
 2. Tap "Cerrar Sesión" / Logout
@@ -238,8 +238,8 @@
 - Backend invalidates refresh token if online
 
 ### TC-LOGIN-041 — Logout preserva registros pendientes de sync
-**Priority**: P0  
-**Preconditions**: 3 grabados with `estado_sync: "pendiente"` exist  
+**Priority**: P0
+**Preconditions**: 3 grabados with `estado_sync: "pendiente"` exist
 **Steps**:
 1. Logout
 2. Login again with same user
@@ -250,8 +250,8 @@
 - Sync can resume normally
 
 ### TC-LOGIN-042 — Logout offline
-**Priority**: P2  
-**Preconditions**: User offline with valid offline token  
+**Priority**: P2
+**Preconditions**: User offline with valid offline token
 **Steps**:
 1. Logout while offline
 
@@ -265,7 +265,7 @@
 ## Brute Force / Rate Limiting Tests
 
 ### TC-LOGIN-050 — 5 intentos fallidos consecutivos
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Attempt login with wrong password 5 times consecutively
 
@@ -274,7 +274,7 @@
 - Login button disabled for lockout period (5 min)
 
 ### TC-LOGIN-051 — Backend rate limiting (10/min per IP)
-**Priority**: P2  
+**Priority**: P2
 **Steps**:
 1. Send > 10 login requests in under 1 minute
 
@@ -287,8 +287,8 @@
 ## Multi-Tab / Multi-Instance Tests
 
 ### TC-LOGIN-060 — Logout sincronizado entre pestañas (PWA)
-**Priority**: P3  
-**Preconditions**: App open in 2 browser tabs (PWA mode)  
+**Priority**: P3
+**Preconditions**: App open in 2 browser tabs (PWA mode)
 **Steps**:
 1. Logout in tab 1
 
@@ -300,7 +300,7 @@
 ## Edge Cases
 
 ### TC-LOGIN-070 — Password con caracteres especiales
-**Priority**: P2  
+**Priority**: P2
 **Steps**:
 1. Login with password containing `áéíóú ñ @ # $ %`
 
@@ -309,8 +309,8 @@
 - Special characters handled properly in API request
 
 ### TC-LOGIN-071 — Cambio de password en otro dispositivo
-**Priority**: P2  
-**Preconditions**: User logged in on device A, password changed on device B  
+**Priority**: P2
+**Preconditions**: User logged in on device A, password changed on device B
 **Steps**:
 1. On device A, wait for access token to expire
 2. Refresh attempt will fail
@@ -321,7 +321,7 @@
 - User remains operational offline
 
 ### TC-LOGIN-072 — Reloj del dispositivo desincronizado
-**Priority**: P3  
+**Priority**: P3
 **Steps**:
 1. Set device clock 48h ahead
 2. Check offline token behavior
@@ -331,8 +331,8 @@
 - Known limitation documented
 
 ### TC-LOGIN-073 — Almacenamiento lleno al guardar tokens
-**Priority**: P3  
-**Preconditions**: Device storage nearly full  
+**Priority**: P3
+**Preconditions**: Device storage nearly full
 **Steps**:
 1. Attempt login
 
@@ -340,7 +340,7 @@
 - If storage fails: _"Error al guardar sesión. Libera espacio en el dispositivo."_
 
 ### TC-LOGIN-074 — Conexión intermitente durante login
-**Priority**: P2  
+**Priority**: P2
 **Steps**:
 1. Start login with connection
 2. Connection drops mid-request
@@ -351,7 +351,7 @@
 - No partial state saved
 
 ### TC-LOGIN-075 — Password visibility toggle
-**Priority**: P2  
+**Priority**: P2
 **Steps**:
 1. Enter password
 2. Tap eye/visibility toggle icon
@@ -362,7 +362,7 @@
 - Toggle state does not submit form
 
 ### TC-LOGIN-076 — Login button disabled until fields filled
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Open login screen with both fields empty
 

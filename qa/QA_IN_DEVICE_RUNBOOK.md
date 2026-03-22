@@ -160,6 +160,7 @@ Before moving on, the agent confirms each filed issue has:
      - `java -version` -> JDK 17+.
    - Verify Android SDK / ADB / Emulator:
      - `adb version`
+     - If `adb` is not found (command not available), update your PATH following `QA_AGENT_SETUP.md` (Android SDK platform-tools) and re-open the terminal, then re-run Phase 0.
      - `emulator -version`
    - Verify `node`, `python`, `gh` CLI:
      - `node --version`

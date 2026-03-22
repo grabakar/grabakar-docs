@@ -1,8 +1,8 @@
 # Technical Assessment — GrabaKar
 
-**Date:** 2026-03-13  
-**Last updated:** 2026-03-13  
-**Scope:** Backend, Frontend, Infrastructure, Documentation, Workflows  
+**Date:** 2026-03-13
+**Last updated:** 2026-03-13
+**Scope:** Backend, Frontend, Infrastructure, Documentation, Workflows
 **Project:** GrabaKar — Offline-first B2B vehicle plate engraving PWA
 
 ---

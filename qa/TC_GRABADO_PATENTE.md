@@ -1,7 +1,7 @@
 # TC_GRABADO_PATENTE — Test Cases: Creación de Registro de Grabado
 
-**Module**: Grabado (Plate Engraving Record)  
-**Feature Docs**: [GRABADO_PATENTE.md](../features/GRABADO_PATENTE.md)  
+**Module**: Grabado (Plate Engraving Record)
+**Feature Docs**: [GRABADO_PATENTE.md](../features/GRABADO_PATENTE.md)
 **API Contract**: `POST /api/v1/grabados/`, `POST /api/v1/sync/upload/`
 
 ---
@@ -9,8 +9,8 @@
 ## Happy Path
 
 ### TC-GRAB-001 — Crear grabado completo (auto, venta)
-**Priority**: P0  
-**Preconditions**: Logged in as operador, online or offline  
+**Priority**: P0
+**Preconditions**: Logged in as operador, online or offline
 **Steps**:
 1. Tap "Nuevo Grabado" on Home
 2. Verify `usuario_responsable` is pre-filled and read-only
@@ -32,7 +32,7 @@
 - Date field shows current local date/time
 
 ### TC-GRAB-002 — Crear grabado mínimo (sin campos opcionales)
-**Priority**: P0  
+**Priority**: P0
 **Steps**:
 1. Tap "Nuevo Grabado"
 2. Enter patente: `ZZZZ99`
@@ -48,7 +48,7 @@
 - All other behavior same as TC-GRAB-001
 
 ### TC-GRAB-003 — Crear grabado para moto
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Create grabado with `tipo_vehiculo: "Moto"`
 2. Tap "Continuar a Grabado de Vidrios"
@@ -58,8 +58,8 @@
 - Multi-vidrio flow shows only 1 glass (Parabrisas)
 
 ### TC-GRAB-004 — Crear grabado offline
-**Priority**: P0  
-**Preconditions**: Device in airplane mode, offline token valid  
+**Priority**: P0
+**Preconditions**: Device in airplane mode, offline token valid
 **Steps**:
 1. Enable airplane mode
 2. Create grabado with all fields
@@ -76,7 +76,7 @@
 ## Patente Validation
 
 ### TC-GRAB-010 — Patente normalización a mayúsculas
-**Priority**: P0  
+**Priority**: P0
 **Steps**:
 1. Enter patente: `bb-df 12`
 2. Confirm patente: `bb-df 12`
@@ -86,19 +86,19 @@
 - Stored as `BBDF12`
 
 ### TC-GRAB-011 — Patente con formato correcto (6 chars)
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Enter patente `ABCD12`, confirm, save
 
 **Expected**: Accepted, saved successfully
 
 ### TC-GRAB-012 — Patente con formato correcto (8 chars)
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Enter patente `ABCD1234`, confirm, save
 
 **Expected**: Accepted, saved successfully
 
 ### TC-GRAB-013 — Patente demasiado corta (< 6 chars)
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Enter patente `ABC12` (5 chars)
 
 **Expected**:
@@ -106,7 +106,7 @@
 - "Guardar" button disabled
 
 ### TC-GRAB-014 — Patente demasiado larga (> 8 chars)
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Enter patente `ABCDE12345` (10 chars)
 
 **Expected**:
@@ -114,7 +114,7 @@
 - Cannot save
 
 ### TC-GRAB-015 — Patente con caracteres no alfanuméricos
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Enter patente `AB@#12`
 
 **Expected**:
@@ -122,7 +122,7 @@
 - Non-alphanumeric chars rejected
 
 ### TC-GRAB-016 — Confirmación de patente no coincide
-**Priority**: P0  
+**Priority**: P0
 **Steps**:
 1. Enter patente: `BBDF12`
 2. Enter confirmation: `BBDF13`
@@ -132,7 +132,7 @@
 - "Guardar" button disabled
 
 ### TC-GRAB-017 — Paste deshabilitado en campo confirmación
-**Priority**: P2  
+**Priority**: P2
 **Steps**:
 1. Enter patente: `BBDF12`
 2. Try to paste `BBDF12` into confirmation field
@@ -141,7 +141,7 @@
 - Paste action blocked (Poka-Yoke: force manual re-typing)
 
 ### TC-GRAB-018 — Patente solo espacios/guiones
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Enter patente `-- --` (only delimiters)
 
 **Expected**:
@@ -153,27 +153,27 @@
 ## VIN Validation
 
 ### TC-GRAB-020 — VIN correcto (17 caracteres)
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Enter VIN `1HGCM82633A004352`
 
 **Expected**: Accepted
 
 ### TC-GRAB-021 — VIN incorrecto (≠ 17 caracteres)
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Enter VIN `1HGCM826` (8 chars)
 
 **Expected**:
 - Error: _"El VIN/Chasis debe tener 17 caracteres alfanuméricos."_
 
 ### TC-GRAB-022 — VIN con caracteres especiales
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Enter VIN `1HGCM82633A00@35#`
 
 **Expected**:
 - Error (non-alphanumeric characters)
 
 ### TC-GRAB-023 — VIN vacío (opcional)
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Leave VIN empty, save
 
 **Expected**: Accepted, `vin_chasis: null`
@@ -183,8 +183,8 @@
 ## Duplicate Detection
 
 ### TC-GRAB-030 — Duplicado detectado (< 30 días)
-**Priority**: P0  
-**Preconditions**: Grabado with patente `BBDF12` created 5 days ago in IndexedDB  
+**Priority**: P0
+**Preconditions**: Grabado with patente `BBDF12` created 5 days ago in IndexedDB
 **Steps**:
 1. Start new grabado
 2. Enter patente `BBDF12`, confirm
@@ -194,8 +194,8 @@
 - Two buttons: "Cancelar" and "Continuar"
 
 ### TC-GRAB-031 — Duplicado aceptado por usuario
-**Priority**: P0  
-**Preconditions**: TC-GRAB-030 alert shown  
+**Priority**: P0
+**Preconditions**: TC-GRAB-030 alert shown
 **Steps**: Tap "Continuar"
 
 **Expected**:
@@ -203,7 +203,7 @@
 - All other behavior normal
 
 ### TC-GRAB-032 — Duplicado cancelado por usuario
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Tap "Cancelar" on duplicate alert
 
 **Expected**:
@@ -212,8 +212,8 @@
 - No record created
 
 ### TC-GRAB-033 — No duplicado (> 30 días)
-**Priority**: P1  
-**Preconditions**: Grabado with patente `BBDF12` created 35 days ago  
+**Priority**: P1
+**Preconditions**: Grabado with patente `BBDF12` created 35 days ago
 **Steps**: Enter patente `BBDF12`
 
 **Expected**:
@@ -221,7 +221,7 @@
 - `es_duplicado: false`
 
 ### TC-GRAB-034 — No duplicado (different patente)
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Enter patente `ZZZZ99` (no previous record)
 
 **Expected**:
@@ -229,8 +229,8 @@
 - `es_duplicado: false`
 
 ### TC-GRAB-035 — Duplicado con normalización
-**Priority**: P2  
-**Preconditions**: Grabado with patente `BBDF12` exists  
+**Priority**: P2
+**Preconditions**: Grabado with patente `BBDF12` exists
 **Steps**: Enter patente `bb-df 12` (different formatting)
 
 **Expected**:
@@ -242,7 +242,7 @@
 ## Post-Save Behavior
 
 ### TC-GRAB-040 — Campos read-only después de guardar
-**Priority**: P0  
+**Priority**: P0
 **Steps**:
 1. Save a grabado
 2. Try to edit `patente` field
@@ -253,7 +253,7 @@
 - No way to change patente after saving
 
 ### TC-GRAB-041 — Botón cambia a "Continuar a Grabado de Vidrios"
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Save a grabado
 
 **Expected**:
@@ -261,7 +261,7 @@
 - Button uses tenant primary color
 
 ### TC-GRAB-042 — Navegación a flujo multi-vidrio
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Tap "Continuar a Grabado de Vidrios"
 
 **Expected**:
@@ -270,7 +270,7 @@
 - Multi-vidrio loads correct glass list
 
 ### TC-GRAB-043 — UUID visible en datos del registro
-**Priority**: P2  
+**Priority**: P2
 **Steps**: After saving, check record details
 
 **Expected**:
@@ -281,7 +281,7 @@
 ## Formulario / UI
 
 ### TC-GRAB-050 — Formulario muestra todos los campos requeridos
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Open "Nuevo Grabado" screen
 
 **Expected**:
@@ -291,7 +291,7 @@
 - Date shown (auto-filled)
 
 ### TC-GRAB-051 — Selectores cargan opciones desde config cacheada
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Open form after login
 
 **Expected**:
@@ -301,14 +301,14 @@
 - `formato_impresion`: shows Horizontal, Vertical
 
 ### TC-GRAB-052 — Botón "Guardar" deshabilitado con campos inválidos
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Open form, leave required fields empty
 
 **Expected**:
 - "Guardar" button disabled until all required validations pass
 
 ### TC-GRAB-053 — Validación en onBlur
-**Priority**: P2  
+**Priority**: P2
 **Steps**:
 1. Enter invalid patente `AB`
 2. Tab/blur away from field
@@ -321,7 +321,7 @@
 ## Edge Cases
 
 ### TC-GRAB-060 — App se cierra durante guardado
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Fill all fields
 2. Tap "Guardar"
@@ -332,15 +332,15 @@
 - On reopen: either complete record exists, or no partial record
 
 ### TC-GRAB-061 — IndexedDB llena
-**Priority**: P2  
-**Preconditions**: Device storage nearly full  
+**Priority**: P2
+**Preconditions**: Device storage nearly full
 **Steps**: Try to save a grabado
 
 **Expected**:
 - Error: _"Almacenamiento lleno. Sincroniza los registros pendientes o libera espacio."_
 
 ### TC-GRAB-062 — Usuario desactivado mientras offline
-**Priority**: P2  
+**Priority**: P2
 **Steps**:
 1. Admin deactivates user on backend
 2. User (still offline) creates grabados
@@ -352,14 +352,14 @@
 - Records marked `estado_sync: "error"` with reason
 
 ### TC-GRAB-063 — Orden de trabajo > 50 caracteres
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Enter 51+ characters in orden de trabajo
 
 **Expected**:
 - Error: _"La orden de trabajo no puede exceder 50 caracteres."_
 
 ### TC-GRAB-064 — Formulario con orientación landscape/portrait
-**Priority**: P3  
+**Priority**: P3
 **Steps**: Rotate device during form entry
 
 **Expected**:

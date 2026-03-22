@@ -1,6 +1,6 @@
 # TC_FLUJO_MULTI_VIDRIO — Test Cases: Flujo Iterativo de Grabado por Vidrio
 
-**Module**: Multi-Glass Poka-Yoke Flow  
+**Module**: Multi-Glass Poka-Yoke Flow
 **Feature Docs**: [FLUJO_MULTI_VIDRIO.md](../features/FLUJO_MULTI_VIDRIO.md)
 
 ---
@@ -8,8 +8,8 @@
 ## Happy Path
 
 ### TC-MV-001 — Flujo completo auto (6 vidrios)
-**Priority**: P0  
-**Preconditions**: Grabado created with `tipo_vehiculo: "auto"`, tapped "Continuar a Grabado de Vidrios"  
+**Priority**: P0
+**Preconditions**: Grabado created with `tipo_vehiculo: "auto"`, tapped "Continuar a Grabado de Vidrios"
 **Steps**:
 1. Verify screen shows "Vidrio 1 de 6" with glass name "Parabrisas"
 2. Verify patente displayed in large format (≥ 48px, monospace, bold)
@@ -28,8 +28,8 @@
 - 6 `ImpresionVidrio` records created, each with `cantidad_impresiones: 1`
 
 ### TC-MV-002 — Flujo completo moto (1 vidrio)
-**Priority**: P0  
-**Preconditions**: Grabado with `tipo_vehiculo: "moto"`  
+**Priority**: P0
+**Preconditions**: Grabado with `tipo_vehiculo: "moto"`
 **Steps**:
 1. Enter multi-vidrio flow
 2. Verify "Vidrio 1 de 1" with name "Parabrisas"
@@ -42,8 +42,8 @@
 - Grabado marked complete
 
 ### TC-MV-003 — Flujo offline
-**Priority**: P0  
-**Preconditions**: Device offline  
+**Priority**: P0
+**Preconditions**: Device offline
 **Steps**: Complete entire multi-vidrio flow without internet
 
 **Expected**:
@@ -56,7 +56,7 @@
 ## Print Button Behavior
 
 ### TC-MV-010 — Imprimir incrementa contador
-**Priority**: P0  
+**Priority**: P0
 **Steps**:
 1. On any glass screen, tap "Imprimir" 3 times
 
@@ -67,7 +67,7 @@
 - `ImpresionVidrio.cantidad_impresiones = 3`
 
 ### TC-MV-011 — Reimprimir vidrio (múltiples impresiones)
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Tap "Imprimir" twice on same glass
 
@@ -78,7 +78,7 @@
 - `omitido` remains `false`
 
 ### TC-MV-012 — Debounce de doble-tap (500ms)
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Rapidly double-tap "Imprimir" button (< 200ms apart)
 
@@ -87,7 +87,7 @@
 - Toast shows "(1)" not "(2)"
 
 ### TC-MV-013 — Imprimir sin Bluetooth (Fase 1)
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Tap "Imprimir"
 
 **Expected**:
@@ -100,7 +100,7 @@
 ## Skip Glass Behavior
 
 ### TC-MV-020 — Omitir vidrio con confirmación
-**Priority**: P0  
+**Priority**: P0
 **Steps**:
 1. On glass "Luneta", tap "Omitir este vidrio"
 2. Confirm in dialog: _"¿Omitir el grabado de Luneta? Se registrará como no impreso."_
@@ -110,7 +110,7 @@
 - Advances to next glass automatically
 
 ### TC-MV-021 — Cancelar omisión de vidrio
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Tap "Omitir este vidrio"
 2. Tap "Cancelar" in confirmation dialog
@@ -120,7 +120,7 @@
 - No changes to the record
 
 ### TC-MV-022 — Omitir todos los vidrios
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Skip all 6 glasses without printing any
 
 **Expected**:
@@ -128,7 +128,7 @@
 - Cannot finalize with all glasses omitted/unprinted
 
 ### TC-MV-023 — Omitir algunos, imprimir otros
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Print on glasses 1, 3, 5
 2. Skip glasses 2, 4, 6
@@ -143,7 +143,7 @@
 ## Navigation
 
 ### TC-MV-030 — Botón "Atrás" en primer vidrio
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. On vidrio 1, tap back button (or Android hardware back)
 2. Confirmation: _"¿Abandonar el flujo de grabado? Los vidrios ya registrados se conservarán."_
@@ -154,7 +154,7 @@
 - Any `ImpresionVidrio` records already created are preserved
 
 ### TC-MV-031 — Cancelar abandono del flujo
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Tap back, then "Cancelar"
 
 **Expected**:
@@ -162,7 +162,7 @@
 - No data lost
 
 ### TC-MV-032 — Android hardware back button
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Press hardware back button on emulator (← key)
 
 **Expected**:
@@ -170,7 +170,7 @@
 - Shows abandon confirmation
 
 ### TC-MV-033 — No se puede retroceder a vidrio anterior
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Print on vidrio 1, go to vidrio 2
 2. Try to go back to vidrio 1
@@ -184,7 +184,7 @@
 ## Progress Indicator
 
 ### TC-MV-040 — Indicador de progreso correcto
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Navigate through all 6 glasses
 
 **Expected**:
@@ -192,7 +192,7 @@
 - Progress dots: ● fills as you advance
 
 ### TC-MV-041 — Botón "Finalizar" solo en último vidrio
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Navigate to the last glass
 
 **Expected**:
@@ -204,7 +204,7 @@
 ## Patente Display (Poka-Yoke)
 
 ### TC-MV-050 — Patente en formato grande
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Enter multi-vidrio flow
 
 **Expected**:
@@ -214,7 +214,7 @@
 - Highly legible (high contrast against background)
 
 ### TC-MV-051 — Patente correcta en todos los vidrios
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Navigate through all glasses
 
 **Expected**:
@@ -222,7 +222,7 @@
 - Patente matches the one entered in grabado form
 
 ### TC-MV-052 — Patente legible en landscape y portrait
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Rotate device on a glass screen
 
 **Expected**:
@@ -234,7 +234,7 @@
 ## Edge Cases
 
 ### TC-MV-060 — App se cierra en medio del flujo
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Print on 3 glasses
 2. Force-close app
@@ -246,8 +246,8 @@
 - If no: go to Home (unfinished grabado preserved)
 
 ### TC-MV-061 — Config de vidrios cambia entre login y grabado
-**Priority**: P2  
-**Preconditions**: Login cached config has auto=6 glasses, then config updated on server to auto=7  
+**Priority**: P2
+**Preconditions**: Login cached config has auto=6 glasses, then config updated on server to auto=7
 **Steps**: Start grabado flow
 
 **Expected**:
@@ -255,15 +255,15 @@
 - Does NOT recalculate vidrios mid-flow
 
 ### TC-MV-062 — Tipo vehículo con 0 vidrios configurados
-**Priority**: P2  
-**Preconditions**: Config has 0 glasses for vehicle type  
+**Priority**: P2
+**Preconditions**: Config has 0 glasses for vehicle type
 **Steps**: Start multi-vidrio flow
 
 **Expected**:
 - Error: _"No hay vidrios configurados para este tipo de vehículo. Contacta al administrador."_
 
 ### TC-MV-063 — Impresiones rápidas concurrentes
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Tap "Imprimir" as fast as possible 10 times
 
 **Expected**:

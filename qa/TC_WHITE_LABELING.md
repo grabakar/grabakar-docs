@@ -1,6 +1,6 @@
 # TC_WHITE_LABELING — Test Cases: Multi-Tenant Branding / White-Label
 
-**Module**: White-Labeling / Multi-Tenant Branding  
+**Module**: White-Labeling / Multi-Tenant Branding
 **Feature Docs**: [WHITE_LABELING.md](../features/WHITE_LABELING.md)
 
 ---
@@ -8,8 +8,8 @@
 ## Branding Application
 
 ### TC-WL-001 — Tenant branding aplicado tras login
-**Priority**: P0  
-**Preconditions**: Tenant "VidrioPro Chile" has custom `color_primario: "#FF0000"`, `color_secundario: "#00FF00"`, logo_url, nombre  
+**Priority**: P0
+**Preconditions**: Tenant "VidrioPro Chile" has custom `color_primario: "#FF0000"`, `color_secundario: "#00FF00"`, logo_url, nombre
 **Steps**:
 1. Login as user from "VidrioPro Chile"
 2. Observe Home screen
@@ -22,8 +22,8 @@
 - CSS variables: `--color-primary: #FF0000`, `--color-secondary: #00FF00`
 
 ### TC-WL-002 — Branding default sin config cacheada
-**Priority**: P0  
-**Preconditions**: First-ever app launch, no cached config  
+**Priority**: P0
+**Preconditions**: First-ever app launch, no cached config
 **Steps**: Open app
 
 **Expected**:
@@ -33,7 +33,7 @@
 - Default secondary: `#F97316`
 
 ### TC-WL-003 — Branding persiste offline
-**Priority**: P0  
+**Priority**: P0
 **Steps**:
 1. Login (online) → config cached
 2. Close app
@@ -44,7 +44,7 @@
 - Colors, logo, name all correct
 
 ### TC-WL-004 — CSS variables aplicadas correctamente
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Inspect elements after login
 
 **Expected**:
@@ -53,8 +53,8 @@
 - Text brand elements using tenant color
 
 ### TC-WL-005 — Logo fallback cuando URL falla
-**Priority**: P1  
-**Preconditions**: Tenant logo_url points to broken/expired URL  
+**Priority**: P1
+**Preconditions**: Tenant logo_url points to broken/expired URL
 **Steps**: Login and observe header
 
 **Expected**:
@@ -63,7 +63,7 @@
 - `onError` handler triggers gracefully
 
 ### TC-WL-006 — Refresh de config manual
-**Priority**: P2  
+**Priority**: P2
 **Steps**:
 1. Login (config cached)
 2. Admin changes tenant colors on backend
@@ -79,7 +79,7 @@
 ## Zero Hardcoded Brand
 
 ### TC-WL-010 — No strings "GrabaKar" en componentes React
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Grep source code for hardcoded "GrabaKar" strings
 
 **Expected**:
@@ -87,7 +87,7 @@
 - App name always from `useAppConfig().appName`
 
 ### TC-WL-011 — Nombre del tenant en header
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Login, check header/nav bar
 
 **Expected**:
@@ -99,7 +99,7 @@
 ## Multiple Tenants on Same Device
 
 ### TC-WL-020 — Cambio de tenant por login diferente
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Login as user from Tenant A (red branding)
 2. Logout
@@ -111,7 +111,7 @@
 - No remnants of Tenant A branding
 
 ### TC-WL-021 — Config sobrescrita en mismo dispositivo
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Same as TC-WL-020
 
 **Expected**:
@@ -123,7 +123,7 @@
 ## Validation
 
 ### TC-WL-030 — Color hex inválido en config
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Backend has `color_primario: "not-a-color"`
 
 **Expected**:
@@ -132,7 +132,7 @@
 - Fallback to default might apply
 
 ### TC-WL-031 — Logo URL vacía
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Tenant has `logo_url: ""`
 
 **Expected**:
@@ -140,7 +140,7 @@
 - No broken image
 
 ### TC-WL-032 — Caracteres especiales en nombre de tenant
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Tenant name: `Vidrio & Patente <Chile>`
 
 **Expected**:
@@ -149,7 +149,7 @@
 - React handles escaping by default
 
 ### TC-WL-033 — Config JSON malformada
-**Priority**: P2  
+**Priority**: P2
 **Steps**: `configuracion_json` in IndexedDB is corrupt/invalid
 
 **Expected**:
@@ -161,7 +161,7 @@
 ## Edge Cases
 
 ### TC-WL-040 — Colores con bajo contraste
-**Priority**: P3  
+**Priority**: P3
 **Steps**: Tenant configures `color_primario: "#FFFFFF"` (white on white)
 
 **Expected**:
@@ -170,7 +170,7 @@
 - Known limitation
 
 ### TC-WL-041 — Config cambia mientras usuario está offline
-**Priority**: P2  
+**Priority**: P2
 **Steps**:
 1. Login, go offline
 2. Admin changes branding

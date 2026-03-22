@@ -99,6 +99,7 @@ Each test case includes:
 | [TC_EDGE_CASES.md](TC_EDGE_CASES.md) | Cross-cutting edge cases |
 | [TC_BACKEND_REPORTES.md](TC_BACKEND_REPORTES.md) | Backend: Automated XLSX/CSV/JSON generation & Celery |
 | [TC_BACKEND_DATA_CONSISTENCY.md](TC_BACKEND_DATA_CONSISTENCY.md) | Backend: DB constraints, isolation, API validation |
+| [TC_RBAC_PANEL_ADMIN_QA.md](TC_RBAC_PANEL_ADMIN_QA.md) | Post-implementación: RBAC panel + OpenAPI coherencia |
 | [QA_AGENT_WORKFLOW.md](QA_AGENT_WORKFLOW.md) | Automated QA agent for emulator testing |
 | [QA_AGENT_SETUP.md](QA_AGENT_SETUP.md) | Emulator and tooling setup |
 | [QA_GITHUB_ISSUES.md](QA_GITHUB_ISSUES.md) | GitHub issue templates and workflow |

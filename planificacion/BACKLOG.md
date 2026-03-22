@@ -296,6 +296,58 @@
 
 ---
 
+## Fase 3 — Panel admin, RBAC y producto (planificado)
+
+> Ítems acordados para implementación futura. Ver [DOCUMENTACION_PLANIFICADA.md](DOCUMENTACION_PLANIFICADA.md).
+
+### P3-01: RBAC panel — tres personas
+- **Repos:** `grabakar-backend`, `grabakar-admin`
+- **Descripción:** Implementar permisos diferenciados: (1) administrador de plataforma GrabaKar (sudo: todos los tenants), (2) administrador de cliente (solo su tenant: sucursales, operadores, metas), (3) operador con acceso al panel solo lectura acotado a su sucursal. Governar acceso por `Usuario.panel_persona` (con compatibilidad para `is_staff` en plataforma).
+- **Archivos relevantes:** `producto/PANEL_ADMIN_PERSONAS_Y_PERMISOS.md`, `tecnico/RBAC_PANEL_ADMIN.md`
+- **Estado:** completo
+
+### P3-02: Operador — sucursal obligatoria y queries acotadas
+- **Repo:** `grabakar-backend`
+- **Descripción:** Garantizar que usuarios con rol operador tengan `sucursal` obligatoria; APIs y panel filtran grabados/datos por sucursal cuando la persona es operador con vista de panel.
+- **Dependencias:** P3-01
+- **Archivos relevantes:** `producto/MODELO_CLIENTE.md`
+- **Estado:** completo
+
+### P3-03: Cliente — RUT, email y teléfono de contacto
+- **Repo:** `grabakar-backend`
+- **Descripción:** Modelar identificador de cliente (p. ej. RUT empresa), email y teléfono de contacto para recuperación de cuenta y comunicación; evaluar RUT como `username` para usuarios cliente según política de producto.
+- **Archivos relevantes:** `producto/MODELO_CLIENTE.md`
+- **Estado:** pendiente
+
+### P3-04: UX — Cliente con una sola sucursal
+- **Repo:** `grabakar-admin`
+- **Descripción:** Simplificar navegación cuando el tenant tiene una sola sucursal (p. ej. ocultar o acortar menú «Sucursales», etiquetas contextuales).
+- **Estado:** pendiente
+
+### P3-05: Flujo multi-vidrio — reimpresión solo en pantalla final
+- **Repo:** `grabakar-frontend`
+- **Descripción:** Unificar flujo «Imprimir y siguiente»; permitir **reimpresiones solo en la pantalla final** del flujo (no en cada paso de vidrio).
+- **Archivos relevantes:** `features/dashboard-print.md`, `features/FLUJO_MULTI_VIDRIO.md`
+- **Estado:** pendiente
+
+### P3-06: Re-ingreso de patente ya impresa para reimprimir
+- **Repo:** `grabakar-frontend` (+ API si aplica)
+- **Descripción:** Si una patente ya fue grabada, permitir ingresar nuevamente la misma patente y disparar flujo de reimpresión según reglas de negocio (duplicados, auditoría).
+- **Estado:** pendiente
+
+### P3-07: Dashboards y billing (spec `dashboard-print`) en panel
+- **Repos:** `grabakar-backend`, `grabakar-admin`
+- **Descripción:** Endpoints y UI de dashboards por rol, billing por tenant, impresión tipo factura — **en el panel web**, no en la APK. Incluye campos `precio_por_grabado`, `meta_mensual` cuando correspondan.
+- **Archivos relevantes:** `features/dashboard-print.md`
+- **Estado:** pendiente
+
+### P3-08: Completar `tecnico/RBAC_PANEL_ADMIN.md`
+- **Descripción:** Sustituir el stub por matriz técnica endpoint × rol × alcance, alineada a P3-01.
+- **Dependencias:** P3-01
+- **Estado:** completo
+
+---
+
 ## Grafo de Dependencias
 
 ```

@@ -1,23 +1,41 @@
-# BLUETOOTH_IMPRESION — Impresión vía Bluetooth (Stub)
+# BLUETOOTH_IMPRESION — Impresión vía Bluetooth
 
 **Fase**: 3
-**Dependencia**: Ionic/Capacitor integrado (Fase 5 puede adelantarse parcialmente).
-**Estado**: No iniciado.
+**Estado**: Implementado en APK Android (multi-vidrio).
 
 ## Alcance
 
-Impresión de patente en sticker/calcomanía desde la app, conectando a impresora portátil vía Bluetooth.
+Impresión de comprobante térmico por vidrio desde la app, usando una impresora **emparejada** vía Bluetooth Classic (perfil serie **SPP**).
 
-## Protocolo
+## Protocolo y stack
 
-- **Primario**: ESC/POS (impresoras térmicas portátiles comunes).
-- **Secundario**: ZPL (Zebra), si se requiere por hardware del cliente.
+| Capa | Detalle |
+|------|---------|
+| Transporte | Bluetooth Classic, socket RFCOMM, UUID estándar SPP `00001101-0000-1000-8000-00805F9B34FB` |
+| Carga útil | **ESC/POS** (texto; corte al final si la impresora lo soporta) |
+| Plugin Capacitor | `@kduma-autoid/capacitor-bluetooth-printer` (peer declarado para Cap 6; proyecto usa `legacy-peer-deps` con Cap 8) |
+| Código app | `grabakar-frontend/src/services/PrintService.ts`, `src/utils/escpos.ts` |
+| Configuración | Dexie `configuracion`: `bt_printer_address`, `bt_printer_name`; UI **Menú → Impresora Bluetooth** (`/impresora`) |
 
-## Interfaz
+**PWA / navegador:** no hay impresión Bluetooth; `imprimirCertificado` no hace envío nativo (el contador de impresiones sigue funcionando).
 
-`PrintService` definida en [GRABADO_PATENTE.md](GRABADO_PATENTE.md) y [FLUJO_MULTI_VIDRIO.md](FLUJO_MULTI_VIDRIO.md). Métodos esperados: `discover()`, `connect(deviceId)`, `print(data)`, `disconnect()`.
+**Android 12+:** la app solicita `BLUETOOTH_CONNECT` al iniciar (`MainActivity`).
 
-## Notas
+## Comportamiento en flujo multi-vidrio
 
-- Requiere Capacitor Bluetooth plugin.
-- Fase 1 registra eventos de impresión sin hardware real (mock/stub).
+1. Si hay impresora guardada en ajustes: se llama `connectAndPrint` (conectar → enviar ESC/POS → desconectar). Si falla, se muestra alerta y **no** se incrementa el contador.
+2. Si no hay impresora guardada: no se envía nada por Bluetooth y **sí** se incrementa el contador (modo desarrollo / sin hardware).
+
+## Hardware
+
+- La impresora debe estar **emparejada** en Ajustes de Android antes de seleccionarla en la app.
+- Impresoras que solo exponen **BLE** (sin Classic SPP) pueden no funcionar con este plugin.
+
+## Secundario (no implementado)
+
+- **ZPL** (Zebra) u otros SDKs de marca quedan fuera de este alcance.
+
+## Referencias en código
+
+- `PrintService.imprimirCertificado` — entrada usada desde `FlujoMultiVidrioPage`.
+- Interfaz histórica en [GRABADO_PATENTE.md](GRABADO_PATENTE.md) / [FLUJO_MULTI_VIDRIO.md](FLUJO_MULTI_VIDRIO.md): la API concreta es la de `PrintService.ts` (params con `grabadoUuid`, `patente`, `nombreVidrio`).

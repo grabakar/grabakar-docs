@@ -1,7 +1,7 @@
 # TC_REPORTES — Test Cases: Reportes
 
-**Module**: Reports Generation  
-**Feature Docs**: [REPORTES.md](../features/REPORTES.md)  
+**Module**: Reports Generation
+**Feature Docs**: [REPORTES.md](../features/REPORTES.md)
 **API Contract**: `GET /api/v1/reportes/diario/`, `GET /api/v1/reportes/mensual/`, `GET /api/v1/reportes/plataforma/`
 
 ---
@@ -9,8 +9,8 @@
 ## Per-Tenant Reports (JSON/CSV)
 
 ### TC-REP-001 — Reporte diario JSON
-**Priority**: P0  
-**Preconditions**: Logged in as supervisor, grabados exist for today  
+**Priority**: P0
+**Preconditions**: Logged in as supervisor, grabados exist for today
 **Steps**:
 1. Navigate to reports section
 2. Select daily report, today's date
@@ -21,7 +21,7 @@
 - Counts match actual records for today
 
 ### TC-REP-002 — Reporte diario CSV
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Request daily report in CSV format
 
 **Expected**:
@@ -30,7 +30,7 @@
 - Data matches JSON report
 
 ### TC-REP-003 — Reporte mensual JSON
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Request monthly report for current month
 
 **Expected**:
@@ -38,13 +38,13 @@
 - Same structure as daily but for month range
 
 ### TC-REP-004 — Reporte mensual CSV
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Monthly report, CSV format
 
 **Expected**: Same as daily CSV but with month's data
 
 ### TC-REP-005 — Reporte con filtro por operador
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Request report with `operador_id` filter
 
 **Expected**:
@@ -52,7 +52,7 @@
 - Other operadores excluded
 
 ### TC-REP-006 — Reporte sin registros
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Request report for date with no records
 
 **Expected**:
@@ -65,8 +65,8 @@
 ## Permissions
 
 ### TC-REP-010 — Operador no puede acceder reportes
-**Priority**: P0  
-**Preconditions**: Logged in as `operador`  
+**Priority**: P0
+**Preconditions**: Logged in as `operador`
 **Steps**: Navigate to / request reports endpoint
 
 **Expected**:
@@ -74,20 +74,20 @@
 - Reports section hidden/disabled in UI
 
 ### TC-REP-011 — Supervisor puede descargar reportes
-**Priority**: P0  
-**Preconditions**: Logged in as `supervisor`  
+**Priority**: P0
+**Preconditions**: Logged in as `supervisor`
 **Steps**: Request any report
 
 **Expected**: Successful response with data
 
 ### TC-REP-012 — Admin puede descargar reportes
-**Priority**: P1  
+**Priority**: P1
 **Steps**: As admin, request per-tenant reports
 
 **Expected**: Successful response with data
 
 ### TC-REP-013 — Supervisor solo ve datos de su tenant
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Supervisor requests report
 
 **Expected**:
@@ -99,8 +99,8 @@
 ## Platform XLSX Reports (Pending Implementation)
 
 ### TC-REP-020 — Reporte plataforma XLSX descarga
-**Priority**: P0 (when implemented)  
-**Preconditions**: Admin user, XLSX feature active  
+**Priority**: P0 (when implemented)
+**Preconditions**: Admin user, XLSX feature active
 **Steps**: `GET /reportes/plataforma/?fecha=YYYY-MM-DD&formato=xlsx`
 
 **Expected**:
@@ -109,7 +109,7 @@
 - Content-Type: `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
 
 ### TC-REP-021 — Tab 1: Resumen
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Open Tab 1 of XLSX
 
 **Expected**:
@@ -117,7 +117,7 @@
 - Column: TOTAL PATENTES (count)
 
 ### TC-REP-022 — Tab 2: Resumen por día
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Open Tab 2
 
 **Expected**:
@@ -127,7 +127,7 @@
 - Based on `fecha_sincronizacion`
 
 ### TC-REP-023 — Tab 3: Patentes (detalle)
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Open Tab 3
 
 **Expected**:
@@ -135,14 +135,14 @@
 - 13 columns: PATENTE, CANTIDAD, VIN, OT, RESPONSABLE, DISPOSITIVO, FECHA CREADA, FECHA SINCRONIZADA, NOMBRE, EMAIL, CLIENTE, SUCURSAL, TIPO CLIENTE
 
 ### TC-REP-024 — Reporte es month-to-date
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Request report for March 15
 
 **Expected**:
 - Data covers March 1 through March 14 (fecha - 1 day)
 
 ### TC-REP-025 — No admin → 403
-**Priority**: P0  
+**Priority**: P0
 **Steps**: Non-admin requests plataforma report
 
 **Expected**: 403 Permission Denied
@@ -152,15 +152,15 @@
 ## Celery Automated Reports
 
 ### TC-REP-030 — Tarea diaria genera reporte
-**Priority**: P2  
-**Steps**: Verify `generar_reporte_diario` Celery task  
+**Priority**: P2
+**Steps**: Verify `generar_reporte_diario` Celery task
 
 **Expected**:
 - Task runs at scheduled time
 - Generates report for previous day
 
 ### TC-REP-031 — Tarea XLSX diaria (01:00 AM)
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Verify `generar_reporte_xlsx_diario` scheduled at 01:00 AM Santiago time
 
 **Expected**: XLSX generated for month-to-date
@@ -170,7 +170,7 @@
 ## Edge Cases
 
 ### TC-REP-040 — Registros tardíos (offline sync)
-**Priority**: P1  
+**Priority**: P1
 **Steps**:
 1. Create grabado offline on March 10
 2. Sync on March 15
@@ -181,7 +181,7 @@
 - Record appears under March 10 in `fecha_creacion_local`-based report
 
 ### TC-REP-041 — Reporte con fecha futura
-**Priority**: P2  
+**Priority**: P2
 **Steps**: Request report for a future date
 
 **Expected**:
@@ -189,7 +189,7 @@
 - No crash
 
 ### TC-REP-042 — Reporte cross-tenant sin tenant_id
-**Priority**: P1  
+**Priority**: P1
 **Steps**: Admin request to `/reportes/plataforma/` without `tenant_id`
 
 **Expected**:

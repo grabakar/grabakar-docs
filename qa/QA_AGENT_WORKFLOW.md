@@ -73,7 +73,7 @@ python manage.py loaddata api/fixtures/initial.json
 
 # Or verify against staging — ensure test users exist:
 # - operador1 / password123 (operador role)
-# - supervisor1 / password123 (supervisor role)  
+# - supervisor1 / password123 (supervisor role)
 # - admin1 / password123 (admin role)
 # - All belong to test tenant "GrabaKar Test"
 ```
@@ -90,7 +90,7 @@ The agent executes test cases from the TC documents. For each test case:
 FOR each test case in frontend test suite:
     1. Reset app state if needed
        adb shell pm clear com.grabakar.app
-       
+
     ... [Steps 2-7 detailed UI interactions]
 ```
 
@@ -100,24 +100,24 @@ FOR each test case in frontend test suite:
 FOR each test case in backend test suite (TC_BACKEND_*):
     1. Authenticate & Obtain Tokens
        - POST /api/v1/auth/login/ -> save Access Token
-       
+
     2. Setup Data State
        - Verify DB seeding or send pre-requisite POSTs
-       
+
     3. Execute API Calls
        - Send GET/POST with predefined payloads
        - Capture HTTP status codes and JSON response body
-       
+
     4. Trigger Background Tasks (Celery)
        - Using CLI or internal test endpoints if debugging
        - E.g., docker-compose exec django python manage.py trigger_report
-       
+
     5. Validate Expected Results
        - Assert HTTP Status == 200/400/403
        - Parse JSON for expected keys/values
        - Check Content-Type for XLSX downloads
        - Check Backend Logs / DB records (via Admin or shell)
-       
+
     6. Record Result
        - PASS: log and continue
        - FAIL: log, capture request/response JSON, create GitHub issue on grabakar-backend repo

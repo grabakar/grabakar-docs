@@ -1,8 +1,8 @@
 # Contratos de API
 
-Base URL: `/api/v1/`  
-Formato: JSON  
-Autenticación: JWT Bearer token (header `Authorization: Bearer <token>`)  
+Base URL: `/api/v1/`
+Formato: JSON
+Autenticación: JWT Bearer token (header `Authorization: Bearer <token>`)
 Idioma de mensajes de error: Español
 
 ---

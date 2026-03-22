@@ -1,6 +1,14 @@
 # ROLES_USUARIOS — Roles y Permisos
 
-## Roles
+Este documento describe los **roles en la aplicación móvil / APK** (`operador`, `supervisor`, `admin` en el modelo `Usuario.rol`).
+
+La **personas del panel web** (administrador de plataforma GrabaKar, administrador de cliente, operador con acceso solo lectura al panel) son un eje distinto: ver [PANEL_ADMIN_PERSONAS_Y_PERMISOS.md](PANEL_ADMIN_PERSONAS_Y_PERMISOS.md) y el stub técnico [tecnico/RBAC_PANEL_ADMIN.md](../tecnico/RBAC_PANEL_ADMIN.md).
+
+**Regla de pertenencia:** cada **operador** debe pertenecer a **una sucursal** (cliente con varias sedes sigue teniendo operadores acotados a una sucursal cada uno). Ver [MODELO_CLIENTE.md](MODELO_CLIENTE.md).
+
+---
+
+## Roles (APK y API)
 
 ### operador
 
@@ -47,3 +55,18 @@ Gerente o TI de la empresa cliente. Configura el sistema para su organización.
 | Configurar tenant/branding | — | — | ✓ |
 | Configurar vidrios por tipo vehículo | — | — | ✓ |
 | Configurar expiración token offline | — | — | ✓ |
+
+---
+
+## Panel web vs APK
+
+| Superficie | Usuarios | Notas |
+|------------|----------|--------|
+| APK / PWA | Principalmente **operadores**; también supervisor/admin si usan la app | Sesión offline obligatoria para viabilidad en terreno: [APK_SESION_OFFLINE_INVARIANTE.md](../features/APK_SESION_OFFLINE_INVARIANTE.md) |
+| Panel (`grabakar-admin`) | Dueños, supervisores, **administrador de plataforma** | Analíticas, facturación, gestión de clientes; no es la app de campo |
+
+---
+
+## Backlog — Matriz de permisos del panel
+
+Implementación detallada de RBAC (endpoint × persona) está planificada en [BACKLOG.md](../planificacion/BACKLOG.md) (P3-01, P3-08).
