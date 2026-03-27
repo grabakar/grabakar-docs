@@ -157,7 +157,7 @@ Before moving on, the agent confirms each filed issue has:
 **Steps**
 1. **Tooling sanity check**
    - Verify Java:
-     - `java -version` -> JDK 17+.
+     - `java -version` -> **JDK 21** (requerido por build Android actual).
    - Verify Android SDK / ADB / Emulator:
      - `adb version`
      - If `adb` is not found (command not available), update your PATH following `QA_AGENT_SETUP.md` (Android SDK platform-tools) and re-open the terminal, then re-run Phase 0.
@@ -186,9 +186,13 @@ Before moving on, the agent confirms each filed issue has:
    - If building from source (debug example):
      - `cd grabakar-frontend`
      - `npm install`
-     - `npm run build`
-     - `npx cap sync android`
-     - `cd android && ./gradlew assembleDebug`
+     - Export Java 21:
+       - `export JAVA_HOME="/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home"`
+       - `export PATH="$JAVA_HOME/bin:$PATH"`
+     - Build variant according to target backend:
+       - Local: `npm run build:android:local`
+       - Staging GCP: `npm run build:android:gcp`
+       - Ambas variantes: `npm run build:android:variants`
    - Install on emulator:
      - `adb install -r app/build/outputs/apk/debug/app-debug.apk`
    - Verify installation:
@@ -196,7 +200,11 @@ Before moving on, the agent confirms each filed issue has:
      - Launch:
        - `adb shell am start -n com.grabakar.app/.MainActivity`
 7. **Test users / tenants**
-   - Ensure `operador1`, `supervisor1`, `admin1` exist with known passwords and mapped to test tenant.
+   - En staging, asegurar usuarios seeded por `bootstrap-staging.yml`:
+     - `admin`, `supervisor`, `operador`, `test`
+     - Password default: `grabakar123`
+   - Verificar login API antes de iniciar QA in-device:
+     - `POST /api/v1/auth/login/` con cada usuario debe retornar `200`.
    - If using local backend and not seeded, run the user-creation script described in `QA_AGENT_SETUP.md`.
 8. **GitHub issue reporting readiness**
    - Confirm `gh auth status` shows the agent is authenticated with write scope.

@@ -124,8 +124,8 @@
 **Steps**: Skip all 6 glasses without printing any
 
 **Expected**:
-- At "Finalizar": validation error _"Debes imprimir al menos un vidrio para finalizar."_
-- Cannot finalize with all glasses omitted/unprinted
+- Puede finalizar sin bloqueo por mínimo de impresiones
+- `Grabado.completado = true`
 
 ### TC-MV-023 — Omitir algunos, imprimir otros
 **Priority**: P1
@@ -135,7 +135,7 @@
 3. Finalize
 
 **Expected**:
-- Finalizes successfully (at least 1 glass printed)
+- Finalizes successfully (sin mínimo de impresiones)
 - Correct `omitido` and `cantidad_impresiones` per glass
 
 ---

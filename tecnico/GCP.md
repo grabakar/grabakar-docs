@@ -146,6 +146,61 @@ Ver `DEVOPS_CICD_STRATEGY.md` para los workflows completos. Resumen:
 | PR a `main` | `ci.yml` | ruff + pytest (backend) / build + vitest (frontend) |
 | Push a `main` | `deploy.yml` | build → push → Cloud Run/GCS deploy |
 | Manual | `bootstrap-staging.yml` | Seed staging DB con usuarios de prueba |
+| Manual | `build-apks.yml` (`grabakar-frontend`) | Genera 2 APK artifacts: `apk-local` y `apk-gcp` |
+
+### Build APK (Local + GCP)
+
+Para evitar errores de entorno, el frontend soporta build dual de APK:
+
+- **Local**: `http://10.0.2.2:8000`
+- **GCP Staging**: `https://grabakar-backend-1089044937741.us-central1.run.app`
+
+#### Desde máquina local
+
+```bash
+cd grabakar-frontend
+
+# Java 21 requerido para Gradle/Capacitor Android
+export JAVA_HOME="/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home"
+export PATH="$JAVA_HOME/bin:$PATH"
+
+# Variantes individuales
+npm run build:android:local
+npm run build:android:gcp
+
+# Pipeline dual (genera ambas)
+npm run build:android:variants
+```
+
+Salida esperada:
+
+- `android/app/build/outputs/apk/debug/app-debug-local.apk`
+- `android/app/build/outputs/apk/debug/app-debug-gcp.apk`
+
+#### Desde GitHub Actions
+
+Workflow manual: `grabakar-frontend/.github/workflows/build-apks.yml`
+
+Artifacts:
+
+- `apk-local` -> `app-debug-local.apk`
+- `apk-gcp` -> `app-debug-gcp.apk`
+
+#### Verificación obligatoria de target backend
+
+Después de build GCP, validar que el bundle contenga URL de Cloud Run y no localhost/emulador:
+
+```bash
+python3 - <<'PY'
+from pathlib import Path
+js = next(Path("grabakar-frontend/dist/assets").glob("index-*.js"))
+s = js.read_text(errors="ignore")
+print("has_gcp_url=", "grabakar-backend-1089044937741.us-central1.run.app" in s)
+print("has_local_10_0_2_2=", "10.0.2.2:8000" in s)
+PY
+```
+
+Esperado para APK staging: `has_gcp_url=True` y `has_local_10_0_2_2=False`.
 
 ### Autenticación: Workload Identity Federation (WIF)
 

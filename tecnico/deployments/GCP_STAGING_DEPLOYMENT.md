@@ -42,6 +42,7 @@ The GCP Organization has `iam.disableServiceAccountKeyCreation` enforced, so JSO
 | `grabakar-frontend` | `deploy.yml` | `npm run build` → `gs://grabakar-frontend-staging` |
 | `grabakar-admin` | `deploy.yml` | `npm run build` → `gs://grabakar-admin-staging` |
 | `grabakar-backend` | `bootstrap-staging.yml` | Manual: seeds staging DB with test users |
+| `grabakar-frontend` | `build-apks.yml` | Manual: builds and uploads `apk-local` + `apk-gcp` artifacts |
 
 All deployment workflows trigger on `push` to `main` and support manual `workflow_dispatch`.
 
@@ -69,6 +70,24 @@ The correct flag for the 404 error page in `gcloud storage buckets update` is:
 
 ### 4. WIF propagation delay
 After first creating a WIF pool/provider, expect up to 10 minutes of `invalid_target` errors before the OIDC tokens propagate globally.
+
+### 5. Android build requires Java 21
+`grabakar-frontend` APK build fails with `invalid source release: 21` when the environment uses Java 17 or lower.
+
+Use Java 21 in local builds and CI runners:
+
+```bash
+export JAVA_HOME="/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home"
+export PATH="$JAVA_HOME/bin:$PATH"
+```
+
+### 6. APK backend target must be validated explicitly
+An APK can compile successfully but still point to the wrong backend (`10.0.2.2` vs Cloud Run).
+
+Always validate `dist/assets/index-*.js` after build:
+
+- GCP variant must include `grabakar-backend-1089044937741.us-central1.run.app`
+- GCP variant must not include `10.0.2.2:8000`
 
 ## Setup Script
 

@@ -185,7 +185,7 @@ Los registros `ImpresionVidrio` se sincronizan junto con su `Grabado` padre en e
 |--------|-------|---------|
 | Omitir vidrio | Requiere confirmación | _"¿Omitir el grabado de {nombre_vidrio}? Se registrará como no impreso."_ |
 | Abandonar flujo | Requiere confirmación | _"¿Abandonar el flujo de grabado? Los vidrios ya registrados se conservarán."_ |
-| Finalizar | Al menos 1 vidrio con impresión > 0 | _"Debes imprimir al menos un vidrio para finalizar."_ |
+| Finalizar | Sin mínimo obligatorio de impresiones | _No se bloquea cierre por cantidad de impresiones._ |
 
 ## Criterio de Aceptación
 

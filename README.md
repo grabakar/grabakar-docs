@@ -4,6 +4,8 @@ App B2B offline-first para grabado de patentes vehiculares en Chile (Ley 20.580)
 
 **Estado actual**: Fases 0–1 completas. Fase 2 backend completa, frontend pendiente. Ver [ROADMAP](planificacion/ROADMAP.md).
 
+**Regla crítica de impresión**: no existe un mínimo obligatorio de impresiones por patente. Se permite cerrar/finalizar con 1 impresión (o más), y también imprimir tantas veces como el operador necesite.
+
 ---
 
 ## Índice
@@ -25,6 +27,8 @@ App B2B offline-first para grabado de patentes vehiculares en Chile (Ley 20.580)
 | [DEVOPS_CICD_STRATEGY.md](tecnico/DEVOPS_CICD_STRATEGY.md) | GitHub Actions CI/CD: pipelines, workflows, branch strategy |
 | [TECHNICAL_ASSESSMENT.md](tecnico/TECHNICAL_ASSESSMENT.md) | Diagnóstico de calidad, issues resueltos y pendientes |
 | [deployments/](tecnico/deployments/) | Runbooks de despliegue específicos |
+| [deployments/APK_VARIANTS_PIPELINE.md](tecnico/deployments/APK_VARIANTS_PIPELINE.md) | Pipeline APK dual (Local + GCP), scripts, artifacts y troubleshooting Java 21 |
+| [IMPRESION_ESC_POS.md](tecnico/IMPRESION_ESC_POS.md) | Payload ESC/POS, `GS !`, constantes en `escpos.ts`, calibración sin leyendas, tests, límites y bitmap futuro |
 
 ---
 
@@ -53,7 +57,7 @@ App B2B offline-first para grabado de patentes vehiculares en Chile (Ley 20.580)
 | [dashboard-print.md](features/dashboard-print.md) | ✅ | Convención: dashboards y billing solo en panel, no en APK |
 | [FLUJO_REIMPRESION_APK.md](features/FLUJO_REIMPRESION_APK.md) | ⏳ P3-05/06 | Reimpresión en pantalla final, re-ingreso misma patente |
 | [UX_SUCURSAL_UNICA_PANEL.md](features/UX_SUCURSAL_UNICA_PANEL.md) | ⏳ P3-04 | UX simplificada para tenants con una sola sucursal |
-| [BLUETOOTH_IMPRESION.md](features/BLUETOOTH_IMPRESION.md) | 🔲 Fase 3 | ESC/POS + ZPL, Capacitor plugin, PrintService |
+| [BLUETOOTH_IMPRESION.md](features/BLUETOOTH_IMPRESION.md) | ✅ APK | Bluetooth SPP, ESC/POS; detalle en [IMPRESION_ESC_POS.md](tecnico/IMPRESION_ESC_POS.md) |
 | [CAMARA_OCR.md](features/CAMARA_OCR.md) | 🔲 Fase 4 | Escaneo patente/VIN, Tesseract.js |
 
 ---
